@@ -1,0 +1,296 @@
+openapi: 3.0.0
+info:
+  title: API Olist Project - Microservices Architecture
+  description: >
+    This is an API Gateway for a microservices architecture system. It routes requests from clients to the appropriate microservices. Each microservice is responsible for specific functionalities such as order management, product catalog, or authentication. Each microservice has its own relational database, ensuring separation and independence of services.
+  version: 1.0.0
+servers:
+  - url: http://api.example.com/v1
+  - url: https://api.example.com/v1
+
+paths:
+  /orders:
+    get:
+      tags:
+        - orders
+      summary: Get all orders
+      description: Retrieve all orders from the orders microservice
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+
+    post:
+      tags:
+        - orders
+      summary: Route request to orders microservice
+      description: Route the incoming request to the orders microservice endpoint
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Order created successfully
+
+        "404":
+          description: Endpoint not found
+        "500":
+          description: Internal server error
+
+    put:
+      tags:
+        - orders
+      summary: Update an order
+      description: Update an order in the orders microservice
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Order updated successfully
+
+        "404":
+          description: Endpoint not found
+        "500":
+          description: Internal server error
+
+    delete:
+      tags:
+        - orders
+      summary: Delete all orders
+      description: Delete all orders from the orders microservice
+      responses:
+        "204":
+          description: Success
+        "404":
+          description: Endpoint not found
+        "500":
+          description: Internal server error
+
+  /products:
+    get:
+      tags:
+        - products
+      summary: Get all products
+      description: Retrieve all products from the products microservice
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ""
+
+    post:
+      tags:
+        - products
+      summary: Route request to products microservice
+      description: Route the incoming request to the products microservice endpoint
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ""
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product created successfully
+
+        "404":
+          description: Endpoint not found
+        "500":
+          description: Internal server error
+
+    put:
+      tags:
+        - products
+      summary: Update a product
+      description: Update a product in the products microservice
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ""
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product updated successfully
+
+        "404":
+          description: Endpoint not found
+        "500":
+          description: Internal server error
+
+    delete:
+      tags:
+        - products
+      summary: Delete all products
+      description: Delete all products from the products microservice
+      responses:
+        "204":
+          description: Success
+        "404":
+          description: Endpoint not found
+        "500":
+          description: Internal server error
+
+  /users:
+    get:
+      tags:
+        - users
+      summary: Get all users
+      description: Retrieve all users from the users microservice
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ""
+
+        "404":
+          description: Endpoint not found
+        "500":
+          description: Internal server error
+
+    post:
+      tags:
+        - users
+      summary: Route request to users microservice
+      description: Route the incoming request to the users microservice endpoint
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ""
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User created successfully
+
+        "404":
+          description: Endpoint not found
+        "500":
+          description: Internal server error
+
+    put:
+      tags:
+        - users
+      summary: Update a user
+      description: Update a user in the users microservice
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ""
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User updated successfully
+
+        "404":
+          description: Endpoint not found
+        "500":
+          description: Internal server error
+
+    delete:
+      tags:
+        - users
+      summary: Delete all users
+      description: Delete all users from the users microservice
+      responses:
+        "204":
+          description: Success
+        "404":
+          description: Endpoint not found
+        "500":
+          description: Internal server error
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+
+  schemas:
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        product_id:
+          type: integer
