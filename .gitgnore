@@ -1,0 +1,9 @@
+# Arquivos de byte compilados Python
+__pycache__/
+*.pyc
+
+# Arquivos de ambiente
+.env
+
+# Diretório de dados do MySQL (se você estiver usando um volume para persistência de dados)
+mysql_data/
