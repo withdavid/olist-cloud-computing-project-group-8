@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # Configurações do banco de dados MySQL
-db_config = {
+dbConfig = {
     'host': os.environ['MYSQL_HOST'],
     'user': os.environ['MYSQL_USER'],
     'password': os.environ['MYSQL_PASSWORD'],
@@ -13,10 +13,10 @@ db_config = {
 }
 
 # Função para testar a conexão com o banco de dados
-def test_db_connection():
+def testDbConnection():
     try:
         # Conecta ao banco de dados
-        connection = mysql.connector.connect(**db_config)
+        connection = mysql.connector.connect(**dbConfig)
         cursor = connection.cursor()
 
         # Executa uma consulta
@@ -33,15 +33,15 @@ def test_db_connection():
     except Exception as e:
         return {'status': 'error', 'message': str(e)}
 
-# Função para listar as ordens de um usuário
-def list_user_orders(user_id):
+# Função para listar todas as order
+def listAllOrders():
     try:
-        connection = mysql.connector.connect(**db_config)
+        connection = mysql.connector.connect(**dbConfig)
         cursor = connection.cursor(dictionary=True)
 
-        # Consulta para obter as ordens do usuário
-        query = "SELECT * FROM orders WHERE customer_id = %s"
-        cursor.execute(query, (user_id,))
+        # Consulta para obter todas as order
+        query = "SELECT * FROM orders"
+        cursor.execute(query)
         orders = cursor.fetchall()
 
         cursor.close()
@@ -51,23 +51,103 @@ def list_user_orders(user_id):
     except Exception as e:
         return None
 
+# Função para criar uma nova order
+def createOrder(orderData):
+    try:
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor()
+
+        # Inserir nova order
+        query = "INSERT INTO orders (order_id, customer_id, order_status, order_purchase_timestamp, order_approved_at, order_delivered_carrier_date, order_delivered_customer_date, order_estimated_delivery_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(query, orderData)
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return True
+    except Exception as e:
+        return False
+
+# Função para atualizar uma order
+def updateOrder(orderId, newOrderStatus):
+    try:
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor()
+
+        # Atualizar status da order
+        query = "UPDATE orders SET order_status = %s WHERE order_id = %s"
+        cursor.execute(query, (newOrderStatus, orderId))
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return True
+    except Exception as e:
+        return False
+
+# Função para eliminar todas as orders
+def deleteAllOrders():
+    try:
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor()
+
+        # Elimina todas as orders
+        query = "DELETE FROM orders"
+        cursor.execute(query)
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return True
+    except Exception as e:
+        return False
+
 # Rota para testar a conexão com o banco de dados
 @app.route('/')
 def heartbeat():
-    result = test_db_connection()
+    result = testDbConnection()
     if result['status'] == 'operational':
         return jsonify({'status': 'operational', 'message': 'Database connection operational'})
     else:
         return jsonify({'status': 'error', 'message': 'Database connection error'})
 
-# Rota para listar todas as ordens de um usuário
-@app.route('/listorders/<string:user_id>', methods=['POST'])
-def list_orders_by_user(user_id):
-    orders = list_user_orders(user_id)
+# Rota para listar todas as ordens
+@app.route('/orders', methods=['GET'])
+def getAllOrders():
+    orders = listAllOrders()
     if orders is not None:
         return jsonify({'status': 'success', 'orders': orders})
     else:
-        return jsonify({'status': 'error', 'message': 'Failed to retrieve user orders'})
+        return jsonify({'status': 'error', 'message': 'Failed to retrieve orders'})
+
+# Rota para criar uma nova ordem
+@app.route('/orders', methods=['POST'])
+def createNewOrder():
+    orderData = request.json
+    if createOrder(orderData):
+        return jsonify({'status': 'success', 'message': 'Order created successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to create order'})
+
+# Rota para atualizar uma ordem
+@app.route('/orders/<string:orderId>', methods=['PUT'])
+def updateExistingOrder(orderId):
+    newOrderStatus = request.json.get('order_status')
+    if updateOrder(orderId, newOrderStatus):
+        return jsonify({'status': 'success', 'message': 'Order updated successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to update order'})
+
+# Rota para deletar todas as ordens
+@app.route('/orders', methods=['DELETE'])
+def deleteAllExistingOrders():
+    if deleteAllOrders():
+        return jsonify({'status': 'success', 'message': 'All orders deleted successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to delete all orders'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
