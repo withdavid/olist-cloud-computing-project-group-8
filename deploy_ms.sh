@@ -14,7 +14,6 @@ docker-compose -f src/ms_orders/docker-compose.yml up -d
 sleep 10
 
 # Executar migrações de banco de dados (substitua este comando pelo comando real de migração)
-# Exemplo:
-# docker-compose -f src/ms_orders/docker-compose.yml exec api python manage.py migrate
+python src\ms_orders\utils\parse_dataset.py
 
 echo "Building and deployment completed successfully."

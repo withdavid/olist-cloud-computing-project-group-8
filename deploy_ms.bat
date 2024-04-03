@@ -14,7 +14,6 @@ rem Aguardar alguns segundos para os containers inicializarem completamente
 timeout /t 10 /nobreak >nul
 
 rem Executar migrações de banco de dados (substitua este comando pelo comando real de migração)
-rem Exemplo:
-rem docker-compose -f src\ms_orders\docker-compose.yml exec api python manage.py migrate
+python src\ms_orders\utils\parse_dataset.py
 
 echo Building and deployment completed successfully.
