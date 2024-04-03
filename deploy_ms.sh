@@ -2,13 +2,13 @@
 
 # Constroi imagens Docker para cada serviço
 docker-compose -f src/ms_orders/docker-compose.yml build
-# docker-compose -f src/ms_JESSE_NOME_MICROSERVICO/docker-compose.yml build
-# docker-compose -f src/ms_JOSE_NOME_MICROSERVICO/docker-compose.yml build
+docker-compose -f src/ms_products/docker-compose.yml build
+docker-compose -f src/ms_customers/docker-compose.yml build
 
 # Iniciar os containers para cada serviço
 docker-compose -f src/ms_orders/docker-compose.yml up -d
-# docker-compose -f src/ms_JESSE_NOME_MICROSERVICO/docker-compose.yml up -d
-# docker-compose -f src/ms_JOSE_NOME_MICROSERVICO/docker-compose.yml up -d
+docker-compose -f src/ms_products/docker-compose.yml up -d
+docker-compose -f src/ms_customers/docker-compose.yml up -d
 
 # Aguardar alguns segundos para os containers inicializarem completamente
 sleep 10

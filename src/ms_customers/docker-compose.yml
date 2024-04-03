@@ -7,14 +7,14 @@ services:
     env_file:
      - .env
     ports:
-      - '3306:3306'
+      - '3307:3306'
     volumes:
       - ./mysql_data:/var/lib/mysql
 
   api:
     build: .
     ports:
-      - '5000:5000'
+      - '5001:5001'
     depends_on:
       - mysql
     env_file:

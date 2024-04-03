@@ -1,0 +1,163 @@
+from flask import Flask, jsonify, request
+import mysql.connector
+import os
+
+app = Flask(__name__)
+
+# Configurações do banco de dados MySQL
+dbConfig = {
+    'host': os.environ['MYSQL_HOST'],
+    'user': os.environ['MYSQL_USER'],
+    'password': os.environ['MYSQL_PASSWORD'],
+    'database': os.environ['MYSQL_DATABASE'],
+    'port': 3308  # Porta MySQL ajustada para 3308
+}
+
+# Função para testar a conexão com o banco de dados
+def testDbConnection():
+    try:
+        # Conecta ao banco de dados
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor()
+
+        # Executa uma consulta
+        cursor.execute("SELECT 'ok!'")
+
+        # Obtém o resultado
+        result = cursor.fetchone()
+
+        # Fecha a conexão
+        cursor.close()
+        connection.close()
+
+        return {'status': 'operational', 'message': result[0]}
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}
+
+# Função para listar todos os produtos
+def listAllProducts():
+    try:
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor(dictionary=True)
+
+        # Consulta para obter todos os produtos
+        query = "SELECT * FROM products"
+        cursor.execute(query)
+        products = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return products
+    except Exception as e:
+        return None
+
+# Função para criar um novo produto
+def createProduct(productData):
+    try:
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor()
+
+        # Inserir novo produto
+        query = "INSERT INTO products (product_id, product_category_name, product_name_lenght, product_description_length, product_photos_qty, product_weight_g, product_length_cm, product_height_cm, product_width_cm) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(query, productData)
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return True
+    except Exception as e:
+        return False
+
+# Função para atualizar um produto
+def updateProduct(productId, newProductData):
+    try:
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor()
+
+        # Atualizar o produto
+        query = "UPDATE products SET product_category_name = %s, product_name_lenght = %s, product_description_length = %s, product_photos_qty = %s, product_weight_g = %s, product_length_cm = %s, product_height_cm = %s, product_width_cm = %s WHERE product_id = %s"
+        cursor.execute(query, (*newProductData, productId))
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return True
+    except Exception as e:
+        return False
+
+# Função para eliminar todos os produtos
+def deleteAllProducts():
+    try:
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor()
+
+        # Elimina todos os produtos
+        query = "DELETE FROM products"
+        cursor.execute(query)
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return True
+    except Exception as e:
+        return False
+
+# Rota para testar a conexão com o banco de dados
+@app.route('/')
+def heartbeat():
+    result = testDbConnection()
+    if result['status'] == 'operational':
+        return jsonify({'status': 'operational', 'message': 'Database connection operational'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Database connection error'})
+
+# Rota para listar todos os produtos
+@app.route('/products', methods=['GET'])
+def getAllProducts():
+    products = listAllProducts()
+    if products is not None:
+        return jsonify({'status': 'success', 'products': products})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to retrieve products'})
+
+# Rota para criar um novo produto
+@app.route('/products', methods=['POST'])
+def createNewProduct():
+    productData = request.json
+    if createProduct(productData):
+        return jsonify({'status': 'success', 'message': 'Product created successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to create product'})
+
+# Rota para atualizar um produto
+@app.route('/products/<string:productId>', methods=['PUT'])
+def updateExistingProduct(productId):
+    newProductData = (
+        request.json.get('product_category_name'),
+        request.json.get('product_name_lenght'),
+        request.json.get('product_description_length'),
+        request.json.get('product_photos_qty'),
+        request.json.get('product_weight_g'),
+        request.json.get('product_length_cm'),
+        request.json.get('product_height_cm'),
+        request.json.get('product_width_cm')
+    )
+    if updateProduct(productId, newProductData):
+        return jsonify({'status': 'success', 'message': 'Product updated successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to update product'})
+
+# Rota para eliminar todos os produtos
+@app.route('/products', methods=['DELETE'])
+def deleteAllExistingProducts():
+    if deleteAllProducts():
+        return jsonify({'status': 'success', 'message': 'All products deleted successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to delete all products'})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
