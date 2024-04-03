@@ -123,7 +123,7 @@ def getAllOrders():
     else:
         return jsonify({'status': 'error', 'message': 'Failed to retrieve orders'})
 
-# Rota para criar uma nova ordem
+# Rota para criar uma nova order
 @app.route('/orders', methods=['POST'])
 def createNewOrder():
     orderData = request.json
@@ -132,7 +132,7 @@ def createNewOrder():
     else:
         return jsonify({'status': 'error', 'message': 'Failed to create order'})
 
-# Rota para atualizar uma ordem
+# Rota para atualizar uma order
 @app.route('/orders/<string:orderId>', methods=['PUT'])
 def updateExistingOrder(orderId):
     newOrderStatus = request.json.get('order_status')
@@ -141,7 +141,7 @@ def updateExistingOrder(orderId):
     else:
         return jsonify({'status': 'error', 'message': 'Failed to update order'})
 
-# Rota para deletar todas as ordens
+# Rota para eliminar todas as order
 @app.route('/orders', methods=['DELETE'])
 def deleteAllExistingOrders():
     if deleteAllOrders():
