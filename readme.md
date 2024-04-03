@@ -29,7 +29,7 @@ This diagram illustrates the cloud architecture used in the project, including t
 The Swagger file for the API of this project is available in the `swagger.yml` file. This file contains the API specification, including endpoints, parameters, and examples of requests.
 
 ## Authors:
-[FCUL - Cloud Computing - Group 7]
+[FCUL - Cloud Computing - Group 8]
 - David Martins - fc62725
 - José Augusto Oliveira - fc61009
 - Jesse Araújo - fc60578
