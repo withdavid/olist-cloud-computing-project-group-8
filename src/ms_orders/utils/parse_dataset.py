@@ -1,25 +1,30 @@
 import pandas as pd
-from sqlalchemy import create_engine
-import os
+from sqlalchemy import create_engine, inspect
 
-# Defina as credenciais do banco de dados MySQL
+# MYSQL_INFO
 MYSQL_HOST = '127.0.0.1'
 MYSQL_DATABASE = 'olist_orders'
 MYSQL_USER = 'olist_user'
 MYSQL_PASSWORD = 'olist_password'
 
-# Crie a conexão com o banco de dados MySQL
+# MySQL Conn
 engine = create_engine(f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}')
 
-# Caminho para o arquivo CSV
-csv_file = 'D:\WIN_AMBIENTE\Documentos\GitHub\olist-cloud-computing-project\dataset\olist_orders_dataset.csv'
+# CSV do dataset
+csv_file = '../../../dataset/olist_orders_dataset.csv'
 
+# Verifica se a tabela orders ja existe
+inspector = inspect(engine)
+if not inspector.has_table('orders'):
+    # Se a tabela não existir, carrega a tabela
+    with open('./sql/orders.sql', 'r') as file:
+        sql = file.read()
+    engine.execute(sql)
 
-
-# Carregue os dados do arquivo CSV usando pandas
+# Load CSV file
 df = pd.read_csv(csv_file)
 
-# Insira os dados do DataFrame no banco de dados MySQL
+# Insert on DB
 df.to_sql('orders', con=engine, if_exists='append', index=False)
 
-print("Dados inseridos com sucesso no banco de dados MySQL.")
+print("Data successfully inserted into MySQL database.")
