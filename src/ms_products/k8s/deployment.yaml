@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-products-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ms-products
+  template:
+    metadata:
+      labels:
+        app: ms-products
+    spec:
+      containers:
+        - name: ms-products
+          image: ms-products:latest
+          ports:
+            - containerPort: 8080

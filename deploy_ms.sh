@@ -17,3 +17,9 @@ sleep 10
 python src\ms_orders\utils\parse_dataset.py
 
 echo "Building and deployment completed successfully."
+
+
+kubectl apply -f src/ms_orders/k8s/deployment.yaml
+kubectl apply -f src/ms_products/k8s/deployment.yaml
+kubectl apply -f src/ms_customers/k8s/deployment.yaml
+kubectl apply -f k8s/deployment.yaml

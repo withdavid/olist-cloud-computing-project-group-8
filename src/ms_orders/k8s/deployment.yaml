@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-orders-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ms-orders
+  template:
+    metadata:
+      labels:
+        app: ms-orders
+    spec:
+      containers:
+        - name: ms-orders
+          image: ms-orders:latest
+          ports:
+            - containerPort: 8080

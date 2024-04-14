@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-customers-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ms-customers
+  template:
+    metadata:
+      labels:
+        app: ms-customers
+    spec:
+      containers:
+        - name: ms-customers
+          image: ms-customers:latest
+          ports:
+            - containerPort: 8080
