@@ -1,5 +1,0 @@
-# Use a imagem oficial do MySQL
-FROM mysql:latest
-
-# Copie o arquivo de configuração personalizado para o diretório de configuração do MySQL
-COPY /utils/my.cnf /etc/mysql/my.cnf

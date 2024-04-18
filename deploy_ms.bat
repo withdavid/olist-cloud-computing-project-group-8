@@ -13,8 +13,8 @@ docker-compose -f src\ms_orders\docker-compose.yml up -d
 rem Aguardar alguns segundos para os containers inicializarem completamente
 timeout /t 30 /nobreak >nul
 
-rem Executar migrações de banco de dados (substitua este comando pelo comando real de migração)
-python src\ms_orders\utils\parse_dataset.py
+rem Populate databases
+python src\ms_orders\utils\populate_database.py
 @REM python src\ms_customers\utils\parse_dataset.py
 @REM python src\ms_products\utils\parse_dataset.py
 
