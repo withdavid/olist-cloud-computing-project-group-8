@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, inspect
 # MYSQL_INFO
 MYSQL_HOST = '127.0.0.1'
 MYSQL_DATABASE = 'olist_orders'
-MYSQL_USER = 'olist_user'
+MYSQL_USER = 'olist_myuser'
 MYSQL_PASSWORD = 'olist_password'
 
 # MySQL Conn

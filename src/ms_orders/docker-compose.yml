@@ -1,18 +1,30 @@
-version: '3'
+version: '3.8'
 
+# ENV ARGS: https://dev.mysql.com/doc/refman/5.7/en/environment-variables.html
 services:
   mysql:
     image: mysql:latest
     restart: always
-    env_file:
-     - .env
+    environment:
+      MYSQL_DATABASE: 'olist_orders'
+      MYSQL_USER: 'olist_myuser'
+      MYSQL_PASSWORD: 'olist_password'
+      MYSQL_ROOT_PASSWORD: 'root_password'
     ports:
       - '3306:3306'
+    expose:
+      - '3306'
     volumes:
       - ./mysql_data:/var/lib/mysql
-
+      - ./utils/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    build:
+      context: .
+      # dockerfile: Dockerfile.mysql
+  
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.api
     ports:
       - '5000:5000'
     depends_on:
