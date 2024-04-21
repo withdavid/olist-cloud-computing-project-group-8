@@ -1,25 +1,37 @@
-version: '3'
+version: '3.8'
 
 services:
-  mysql:
+  mysql_customers:
     image: mysql:latest
     restart: always
-    env_file:
-     - .env
+    environment:
+      MYSQL_HOST: 'mysql_customers'
+      MYSQL_DATABASE: 'olist_customers'
+      MYSQL_USER: 'olist_myuser'
+      MYSQL_PASSWORD: 'olist_password'
+      MYSQL_ROOT_PASSWORD: 'root_password'
+      MYSQL_TCP_PORT: 3307
     ports:
-      - '3307:3306'
+      - '3307:3307'
+    expose:
+      - '3307'
     volumes:
-      - ./mysql_data:/var/lib/mysql
+      - ./mysql_data_customers:/var/lib/mysql
+      - ./utils/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    build:
+      context: .
 
   api:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.api
     ports:
-      - '5001:5001'
+      - '5001:5000'
     depends_on:
-      - mysql
+      - mysql_customers
     env_file:
       - .env
 
 volumes:
-  mysql_data:
+  mysql_data_customers:
     driver: local

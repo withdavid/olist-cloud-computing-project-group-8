@@ -1,3 +1,6 @@
+UPDATE mysql.user SET Host='%' WHERE User='olist_myuser';
+FLUSH PRIVILEGES;
+
 CREATE TABLE customers (
     customer_id VARCHAR(50),
     customer_unique_id VARCHAR(50),

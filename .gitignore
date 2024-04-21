@@ -187,3 +187,6 @@ src/ms_orders/mysql_data/server-key.pem
 src/ms_orders/mysql_data/sys/sys_config.ibd
 src/ms_orders/mysql_data/undo_001
 src/ms_orders/mysql_data/undo_002
+/src/ms_customers/mysql_data_customers
+/src/ms_orders/mysql_data_orders
+/src/ms_products/mysql_data_products
