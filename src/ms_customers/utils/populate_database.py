@@ -32,7 +32,7 @@ with engine.connect() as conn:
 
         # Insert on DB
         print("Populating data to table customers...")
-        df.to_sql('orders', con=engine, if_exists='append', index=False)
+        df.to_sql('customers', con=engine, if_exists='append', index=False)
 
         print("Data successfully inserted into MySQL database.")
     else:
