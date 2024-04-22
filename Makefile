@@ -46,10 +46,13 @@ build-images: ## build docker containers
 	docker-compose -f src/ms_customers/docker-compose.yml build --no-cache --force-rm
 .PHONY: build-images
 
-push-images: ## push docker images to docker hub
-	docker-compose -f src/ms_orders/docker-compose.yml push
-	docker-compose -f src/ms_products/docker-compose.yml push
-	docker-compose -f src/ms_customers/docker-compose.yml push
+push-images: ## push docker images to custom docker registry
+	docker tag ms_customers_api:latest fc61009.ddns.net:3389/ms_customers_api:latest
+	docker push fc61009.ddns.net:5000/ms_customers_api:latest
+	docker tag ms_products_api:latest fc61009.ddns.net:3389/ms_products_api:latest
+	docker push fc61009.ddns.net:5000/ms_products_api:latest
+	docker tag ms_orders_api:latest fc61009.ddns.net:3389/ms_orders_api:latest
+	docker push fc61009.ddns.net:5000/ms_orderss_api:latest 
 .PHONY: push-images
 
 deploy-kubernetes: ## deploy kubernetes
