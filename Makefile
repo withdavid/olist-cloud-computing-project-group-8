@@ -52,14 +52,14 @@ push-images: ## push docker images to docker hub
 	docker-compose -f src/ms_customers/docker-compose.yml push
 .PHONY: push-images
 
-deploy-kubernets: ## deploy kubernets
+deploy-kubernetes: ## deploy kubernetes
 	kubectl apply -f k8s/
 	kubectl apply -f src/ms_orders/k8s/
 	kubectl apply -f src/ms_products/k8s/
 	kubectl apply -f src/ms_customers/k8s/
 .PHONY: deploy-kubernets
 
-delete-kubernets: ## delete kubernets
+delete-kubernetes: ## delete kubernetes
 	kubectl delete -f k8s/
 	kubectl delete -f src/ms_orders/k8s/
 	kubectl delete -f src/ms_products/k8s/
