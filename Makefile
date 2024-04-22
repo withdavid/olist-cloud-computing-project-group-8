@@ -59,6 +59,13 @@ deploy-kubernets: ## deploy kubernets
 	kubectl apply -f src/ms_customers/k8s/
 .PHONY: deploy-kubernets
 
+delete-kubernets: ## delete kubernets
+	kubectl delete -f k8s/
+	kubectl delete -f src/ms_orders/k8s/
+	kubectl delete -f src/ms_products/k8s/
+	kubectl delete -f src/ms_customers/k8s/
+.PHONY: delete-kubernets
+
 build-orders: ## build orders container
 	docker-compose -f src/ms_orders/docker-compose.yml build --no-cache --force-rm 
 .PHONY: build-orders
