@@ -28,3 +28,16 @@ spec:
                 name: ms-products-service
                 port:
                   number: 8080
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-olist
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: mysql-olist
+    fsType: ext4
