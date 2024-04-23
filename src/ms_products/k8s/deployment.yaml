@@ -17,3 +17,36 @@ spec:
           image: northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_products_api:latest
           ports:
             - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-products-deployment
+spec:
+  template:
+    spec:
+      containers:
+        - name: mysql-products
+          image: mysql:latest
+          env:
+            - name: MYSQL_HOST
+              value: "mysql_products"
+            - name: MYSQL_DATABASE
+              value: "olist_products"
+            - name: MYSQL_USER
+              value: "olist_myuser"
+            - name: MYSQL_PASSWORD
+              value: "olist_password"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root_password"
+            - name: MYSQL_TCP_PORT
+              value: "3307"
+          ports:
+            - containerPort: 3307
+          volumeMounts:
+            - name: mysql-ms-products-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-ms-products-storage
+          persistentVolumeClaim:
+            claimName: mysql-products
