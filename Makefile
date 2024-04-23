@@ -47,11 +47,11 @@ build-images: ## build docker containers
 .PHONY: build-images
 
 push-images: ## push docker images to custom docker registry
-	docker tag ms_customers_api:latest northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_customers_api:latest
+	docker tag ms_customers-api:latest northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_customers_api:latest
 	docker push northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_customers_api:latest
-	docker tag ms_products_api:latest northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_products_api:latest
+	docker tag ms_products-api:latest northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_products_api:latest
 	docker push northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_products_api:latest
-	docker tag ms_orders_api:latest northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_orders_api:latest
+	docker tag ms_orders-api:latest northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_orders_api:latest
 	docker push northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_orders_api:latest 
 .PHONY: push-images
 
