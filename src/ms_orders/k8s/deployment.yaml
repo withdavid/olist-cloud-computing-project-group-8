@@ -40,9 +40,9 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               value: "root_password"
             - name: MYSQL_TCP_PORT
-              value: "3307"
+              value: "3306"
           ports:
-            - containerPort: 3307
+            - containerPort: 3306
           volumeMounts:
             - name: mysql-ms-orders-storage
               mountPath: /var/lib/mysql
