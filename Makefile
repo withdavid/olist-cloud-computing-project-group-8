@@ -47,12 +47,12 @@ build-images: ## build docker containers
 .PHONY: build-images
 
 push-images: ## push docker images to custom docker registry
-	docker tag ms_customers_api:latest fc61009.ddns.net:3389/ms_customers_api:latest
-	docker push fc61009.ddns.net:5000/ms_customers_api:latest
-	docker tag ms_products_api:latest fc61009.ddns.net:3389/ms_products_api:latest
-	docker push fc61009.ddns.net:5000/ms_products_api:latest
-	docker tag ms_orders_api:latest fc61009.ddns.net:3389/ms_orders_api:latest
-	docker push fc61009.ddns.net:5000/ms_orderss_api:latest 
+	docker tag ms_customers_api:latest northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_customers_api:latest
+	docker push northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_customers_api:latest
+	docker tag ms_products_api:latest northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_products_api:latest
+	docker push northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_products_api:latest
+	docker tag northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_orders_api:latest
+	docker push northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_orderss_api:latest 
 .PHONY: push-images
 
 deploy-kubernetes: ## deploy kubernetes
