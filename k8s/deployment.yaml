@@ -32,7 +32,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mysql-orders
+  name: mysql-orders-pd-volume
 spec:
   capacity:
     storage: 10Gi
@@ -45,7 +45,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mysql-customers
+  name: mysql-customers-pd-volume
 spec:
   capacity:
     storage: 10Gi
@@ -58,7 +58,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mysql-products
+  name: mysql-products-volume
 spec:
   capacity:
     storage: 10Gi
