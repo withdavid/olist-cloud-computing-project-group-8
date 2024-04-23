@@ -32,12 +32,12 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mysqlcna
+  name: mysql-ms
 spec:
   capacity:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
   gcePersistentDisk:
-    pdName: mysqlcna
+    pdName: mysql-ms
     fsType: ext4
