@@ -15,8 +15,6 @@ spec:
         - name: mysql-products
           image: mysql:latest
           env:
-            - name: MYSQL_HOST
-              value: "mysql_products"
             - name: MYSQL_DATABASE
               value: "olist_products"
             - name: MYSQL_USER
@@ -35,7 +33,7 @@ spec:
       volumes:
         - name: mysql-ms-products-storage
           persistentVolumeClaim:
-            claimName: mysql-products
+            claimName: mysql-products-pd-volume
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -54,5 +52,18 @@ spec:
       containers:
         - name: ms-products
           image: northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_products_api:latest
+          env:
+            - name: MYSQL_HOST
+              value: "mysql_products"
+            - name: MYSQL_DATABASE
+              value: "olist_products"
+            - name: MYSQL_USER
+              value: "olist_myuser"
+            - name: MYSQL_PASSWORD
+              value: "olist_password"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root_password"
+            - name: MYSQL_TCP_PORT
+              value: "3308"
           ports:
             - containerPort: 8080

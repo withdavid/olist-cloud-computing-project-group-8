@@ -35,7 +35,7 @@ spec:
       volumes:
         - name: mysql-ms-orders-storage
           persistentVolumeClaim:
-            claimName: mysql-orders
+            claimName: mysql-orders-pd-volume
 ---
 apiVersion: apps/v1
 kind: Deployment

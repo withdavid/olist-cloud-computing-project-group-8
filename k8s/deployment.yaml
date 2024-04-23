@@ -58,7 +58,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mysql-products-volume
+  name: mysql-products-pd-volume
 spec:
   capacity:
     storage: 10Gi

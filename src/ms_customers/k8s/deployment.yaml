@@ -15,8 +15,6 @@ spec:
         - name: mysql-customers
           image: mysql:latest
           env:
-            - name: MYSQL_HOST
-              value: "mysql-customers-deployment"
             - name: MYSQL_DATABASE
               value: "olist_customers"
             - name: MYSQL_USER
@@ -35,7 +33,7 @@ spec:
       volumes:
         - name: mysql-ms-customers-storage
           persistentVolumeClaim:
-            claimName: mysql-customers
+            claimName: mysql-customers-pd-volume
 ---
 apiVersion: apps/v1
 kind: Deployment
