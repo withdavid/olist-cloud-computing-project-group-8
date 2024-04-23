@@ -16,7 +16,7 @@ spec:
           image: mysql:latest
           env:
             - name: MYSQL_HOST
-              value: "mysql_customers"
+              value: "mysql-customers-deployment"
             - name: MYSQL_DATABASE
               value: "olist_customers"
             - name: MYSQL_USER
