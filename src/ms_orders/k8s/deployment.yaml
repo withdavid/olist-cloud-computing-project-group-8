@@ -54,5 +54,18 @@ spec:
       containers:
         - name: ms-orders
           image: northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_orders_api:latest
+          env:
+            - name: MYSQL_HOST
+              value: "mysql_orders"
+            - name: MYSQL_DATABASE
+              value: "olist_orders"
+            - name: MYSQL_USER
+              value: "olist_myuser"
+            - name: MYSQL_PASSWORD
+              value: "olist_password"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root_password"
+            - name: MYSQL_TCP_PORT
+              value: "3306"
           ports:
             - containerPort: 8080

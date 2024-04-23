@@ -6,10 +6,10 @@ app = Flask(__name__)
 
 # Configurações do banco de dados MySQL
 dbConfig = {
-    'host': "mysql-customers-deployment",
-    'user': "olist_myuser",
-    'password': "olist_password",
-    'database': "olist_customers",
+    'host': os.environ['MYSQL_HOST'],
+    'user': os.environ['MYSQL_USER'],
+    'password': os.environ['MYSQL_PASSWORD'],
+    'database': os.environ['MYSQL_DATABASE'],
     'port': 3307
 }
 
