@@ -30,40 +30,37 @@ spec:
                   number: 8080
 ---
 apiVersion: v1
-kind: PersistentVolume
+kind: PersistentVolumeClaim
 metadata:
   name: mysql-orders-pd-volume
 spec:
-  capacity:
-    storage: 10Gi
   accessModes:
     - ReadWriteOnce
-  gcePersistentDisk:
-    pdName: mysql-orders
-    fsType: ext4
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: ""
 ---
 apiVersion: v1
-kind: PersistentVolume
+kind: PersistentVolumeClaim
 metadata:
   name: mysql-customers-pd-volume
 spec:
-  capacity:
-    storage: 10Gi
   accessModes:
     - ReadWriteOnce
-  gcePersistentDisk:
-    pdName: mysql-customers
-    fsType: ext4
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: ""
 ---
 apiVersion: v1
-kind: PersistentVolume
+kind: PersistentVolumeClaim
 metadata:
   name: mysql-products-pd-volume
 spec:
-  capacity:
-    storage: 10Gi
   accessModes:
     - ReadWriteOnce
-  gcePersistentDisk:
-    pdName: mysql-products
-    fsType: ext4
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: ""
