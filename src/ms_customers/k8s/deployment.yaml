@@ -23,7 +23,13 @@ kind: Deployment
 metadata:
   name: mysql-customers-deployment
 spec:
+  selector:
+    matchLabels:
+      app: mysql-customers
   template:
+    metadata:
+      labels:
+        app: mysql-customers
     spec:
       containers:
         - name: mysql-customers

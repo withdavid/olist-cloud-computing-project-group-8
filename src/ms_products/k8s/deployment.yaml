@@ -23,7 +23,13 @@ kind: Deployment
 metadata:
   name: mysql-products-deployment
 spec:
+  selector:
+    matchLabels:
+      app: mysql-products
   template:
+    metadata:
+      labels:
+        app: mysql-products
     spec:
       containers:
         - name: mysql-products
