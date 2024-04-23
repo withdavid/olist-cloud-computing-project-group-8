@@ -1,26 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ms-products-deployment
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: ms-products
-  template:
-    metadata:
-      labels:
-        app: ms-products
-    spec:
-      containers:
-        - name: ms-products
-          image: northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_products_api:latest
-          ports:
-            - containerPort: 8080
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: mysql-products-deployment
 spec:
   selector:
@@ -56,3 +36,23 @@ spec:
         - name: mysql-ms-products-storage
           persistentVolumeClaim:
             claimName: mysql-products
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-products-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ms-products
+  template:
+    metadata:
+      labels:
+        app: ms-products
+    spec:
+      containers:
+        - name: ms-products
+          image: northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_products_api:latest
+          ports:
+            - containerPort: 8080

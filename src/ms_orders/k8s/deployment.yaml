@@ -1,26 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ms-orders-deployment
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: ms-orders
-  template:
-    metadata:
-      labels:
-        app: ms-orders
-    spec:
-      containers:
-        - name: ms-orders
-          image: northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_orders_api:latest
-          ports:
-            - containerPort: 8080
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: mysql-orders-deployment
 spec:
   selector:
@@ -56,3 +36,23 @@ spec:
         - name: mysql-ms-orders-storage
           persistentVolumeClaim:
             claimName: mysql-orders
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-orders-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ms-orders
+  template:
+    metadata:
+      labels:
+        app: ms-orders
+    spec:
+      containers:
+        - name: ms-orders
+          image: northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_orders_api:latest
+          ports:
+            - containerPort: 8080

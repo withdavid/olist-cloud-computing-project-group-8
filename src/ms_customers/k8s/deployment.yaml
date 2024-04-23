@@ -1,26 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ms-customers-deployment
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: ms-customers
-  template:
-    metadata:
-      labels:
-        app: ms-customers
-    spec:
-      containers:
-        - name: ms-customers
-          image: northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_customers_api:latest
-          ports:
-            - containerPort: 8080
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: mysql-customers-deployment
 spec:
   selector:
@@ -56,3 +36,23 @@ spec:
         - name: mysql-ms-customers-storage
           persistentVolumeClaim:
             claimName: mysql-customers
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-customers-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ms-customers
+  template:
+    metadata:
+      labels:
+        app: ms-customers
+    spec:
+      containers:
+        - name: ms-customers
+          image: northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_customers_api:latest
+          ports:
+            - containerPort: 8080
