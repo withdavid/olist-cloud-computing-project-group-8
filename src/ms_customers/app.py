@@ -1,16 +1,15 @@
 from flask import Flask, jsonify, request
 import mysql.connector
 import os
-from decouple import config
 
 app = Flask(__name__)
 
 # Configurações do banco de dados MySQL
 dbConfig = {
-    'host': config('MYSQL_HOST'),
-    'user': config('MYSQL_USER'),
-    'password': config('MYSQL_PASSWORD'),
-    'database': config('MYSQL_DATABASE'),
+    'host': "mysql-customers-deployment",
+    'user': "olist_myuser",
+    'password': "olist_password",
+    'database': "olist_customers",
     'port': 3307
 }
 
