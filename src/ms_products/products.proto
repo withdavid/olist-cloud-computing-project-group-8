@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package products;
+
+service ProductService {
+    rpc GetAllProducts(GetAllProductsRequest) returns (ProductList) {}
+    rpc CreateProduct(CreateProductRequest) returns (Product) {}
+    rpc UpdateProduct(UpdateProductRequest) returns (Product) {}
+}
+
+message GetAllProductsRequest {}
+
+message CreateProductRequest {
+    string product_id = 1;
+    string product_category_name = 2;
+    int32 product_name_length = 3;
+    int32 product_description_length = 4;
+    int32 product_photos_qty = 5;
+    int32 product_weight_g = 6;
+    int32 product_length_cm = 7;
+    int32 product_height_cm = 8;
+    int32 product_width_cm = 9;
+}
+
+message UpdateProductRequest {
+    string product_id = 1;
+    string product_category_name = 2;
+    int32 product_name_length = 3;
+    int32 product_description_length = 4;
+    int32 product_photos_qty = 5;
+    int32 product_weight_g = 6;
+    int32 product_length_cm = 7;
+    int32 product_height_cm = 8;
+    int32 product_width_cm = 9;
+}
+
+message Product {
+    string product_id = 1;
+    string product_category_name = 2;
+    int32 product_name_length = 3;
+    int32 product_description_length = 4;
+    int32 product_photos_qty = 5;
+    int32 product_weight_g = 6;
+    int32 product_length_cm = 7;
+    int32 product_height_cm = 8;
+    int32 product_width_cm = 9;
+}
+
+message ProductList {
+    repeated Product products = 1;
+}

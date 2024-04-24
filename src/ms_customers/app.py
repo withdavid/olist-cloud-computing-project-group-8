@@ -2,6 +2,11 @@ from flask import Flask, jsonify, request
 import mysql.connector
 import os
 
+import grpc
+from concurrent import futures
+import customer_pb2
+import customer_pb2_grpc
+
 app = Flask(__name__)
 
 # Configurações do banco de dados MySQL
@@ -33,6 +38,40 @@ def testDbConnection():
         return {'status': 'operational', 'message': result[0]}
     except Exception as e:
         return {'status': 'error', 'message': str(e)}
+
+# Integração do gRPC
+class CustomerService(customer_pb2_grpc.CustomerServiceServicer):
+    def GetAllCustomers(self, request, context):
+        customers = listAllCustomers()
+        customer_protos = [customer_pb2.Customer(
+            customer_id=customer['customer_id'],
+            customer_unique_id=customer['customer_unique_id'],
+            customer_zip_code_prefix=customer['customer_zip_code_prefix'],
+            customer_city=customer['customer_city'],
+            customer_state=customer['customer_state']
+        ) for customer in customers]
+        return customer_pb2.CustomerList(customers=customer_protos)
+
+    def CreateCustomer(self, request, context):
+        customer_data = (
+            request.customer_id,
+            request.customer_unique_id,
+            request.customer_zip_code_prefix,
+            request.customer_city,
+            request.customer_state
+        )
+        if createCustomer(customer_data):
+            return request
+        else:
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details("Failed to create customer")
+
+    def DeleteAllCustomers(self, request, context):
+        if deleteAllCustomers():
+            return customer_pb2.Empty()
+        else:
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details("Failed to delete all customers")
 
 # Função para listar todos os clientes
 def listAllCustomers():
@@ -123,5 +162,15 @@ def deleteAllExistingCustomers():
     else:
         return jsonify({'status': 'error', 'message': 'Failed to delete all customers'})
 
+
+# Integração do gRPC
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    customer_pb2_grpc.add_CustomerServiceServicer_to_server(CustomerService(), server)
+    server.add_insecure_port('[::]:50052')  # Use uma porta diferente para cada microserviço
+    server.start()
+    server.wait_for_termination()
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    serve()
+    app.run(host='0.0.0.0', port=5000)

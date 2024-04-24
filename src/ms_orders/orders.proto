@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+// Importa os tipos de mensagens padrão do gRPC
+import "google/protobuf/empty.proto";
+
+// Definição do serviço gRPC para orders
+service OrderService {
+    // Método para obter informações de um cliente pelo ID
+    rpc GetCustomerInfo(CustomerRequest) returns (CustomerResponse);
+
+    // Método para obter informações de um produto pelo ID
+    rpc GetProductInfo(ProductRequest) returns (ProductResponse);
+}
+
+// Mensagem de solicitação para obter informações de um cliente
+message CustomerRequest {
+    // ID do cliente
+    string customer_id = 1;
+}
+
+// Mensagem de resposta com as informações do cliente
+message CustomerResponse {
+    // Dados do cliente
+    string customer_id = 1;
+    string customer_name = 2;
+    // Adicione outros campos conforme necessário
+}
+
+// Mensagem de solicitação para obter informações de um produto
+message ProductRequest {
+    // ID do produto
+    string product_id = 1;
+}
+
+// Mensagem de resposta com as informações do produto
+message ProductResponse {
+    // Dados do produto
+    string product_id = 1;
+    string product_name = 2;
+    // Adicione outros campos conforme necessário
+}

@@ -1,6 +1,11 @@
 from flask import Flask, jsonify, request
 import mysql.connector
 import os
+import grpc
+from concurrent import futures
+import threading
+import orders_pb2
+import orders_pb2_grpc
 
 app = Flask(__name__)
 
@@ -33,13 +38,14 @@ def testDbConnection():
     except Exception as e:
         return {'status': 'error', 'message': str(e)}
 
-# Função para listar todas as order
+
+# Função para listar todas as orders
 def listAllOrders():
     try:
         connection = mysql.connector.connect(**dbConfig)
         cursor = connection.cursor(dictionary=True)
 
-        # Consulta para obter todas as order
+        # Consulta para obter todas as orders
         query = "SELECT * FROM orders"
         cursor.execute(query)
         orders = cursor.fetchall()
@@ -141,7 +147,7 @@ def updateExistingOrder(orderId):
     else:
         return jsonify({'status': 'error', 'message': 'Failed to update order'})
 
-# Rota para eliminar todas as order
+# Rota para eliminar todas as orders
 @app.route('/orders', methods=['DELETE'])
 def deleteAllExistingOrders():
     if deleteAllOrders():
@@ -149,5 +155,41 @@ def deleteAllExistingOrders():
     else:
         return jsonify({'status': 'error', 'message': 'Failed to delete all orders'})
 
+# Implementação do serviço gRPC
+class OrderService(orders_pb2_grpc.OrderServiceServicer):
+    def GetAllOrders(self, request, context):
+        orders = listAllOrders()
+        order_protos = [orders_pb2.Order(
+            order_id=order['order_id'],
+            customer_id=order['customer_id'],
+            order_status=order['order_status'],
+            # adicione outros campos conforme necessário
+        ) for order in orders]
+        return orders_pb2.OrderList(orders=order_protos)
+
+    def CreateOrder(self, request, context):
+        createOrder((
+            request.order_id,
+            request.customer_id,
+            request.order_status,
+            # adicione outros campos conforme necessário
+        ))
+        return request
+
+    def UpdateOrderStatus(self, request, context):
+        updateOrder(request.order_id, request.new_status)
+        return request
+
+# Função para iniciar o servidor gRPC
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    orders_pb2_grpc.add_OrderServiceServicer_to_server(OrderService(), server)
+    server.add_insecure_port('[::]:50051')
+    server.start()
+    server.wait_for_termination()
+
+# Iniciar o servidor gRPC em uma thread separada
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    grpc_server_thread = threading.Thread(target=serve)
+    grpc_server_thread.start()
+    app.run(host='0.0.0.0', port=5000)

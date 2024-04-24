@@ -2,6 +2,11 @@ from flask import Flask, jsonify, request
 import mysql.connector
 import os
 
+import grpc
+from concurrent import futures
+import products_pb2
+import products_pb2_grpc
+
 app = Flask(__name__)
 
 # Configurações do banco de dados MySQL
@@ -59,7 +64,7 @@ def createProduct(productData):
         cursor = connection.cursor()
 
         # Inserir novo produto
-        query = "INSERT INTO products (product_id, product_category_name, product_name_lenght, product_description_length, product_photos_qty, product_weight_g, product_length_cm, product_height_cm, product_width_cm) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        query = "INSERT INTO products (product_id, product_category_name, product_name_length, product_description_length, product_photos_qty, product_weight_g, product_length_cm, product_height_cm, product_width_cm) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         cursor.execute(query, productData)
         connection.commit()
 
@@ -77,7 +82,7 @@ def updateProduct(productId, newProductData):
         cursor = connection.cursor()
 
         # Atualizar o produto
-        query = "UPDATE products SET product_category_name = %s, product_name_lenght = %s, product_description_length = %s, product_photos_qty = %s, product_weight_g = %s, product_length_cm = %s, product_height_cm = %s, product_width_cm = %s WHERE product_id = %s"
+        query = "UPDATE products SET product_category_name = %s, product_name_length = %s, product_description_length = %s, product_photos_qty = %s, product_weight_g = %s, product_length_cm = %s, product_height_cm = %s, product_width_cm = %s WHERE product_id = %s"
         cursor.execute(query, (*newProductData, productId))
         connection.commit()
 
@@ -106,6 +111,58 @@ def deleteAllProducts():
     except Exception as e:
         return False
 
+# Implementação dos métodos do serviço gRPC
+class ProductService(products_pb2_grpc.ProductServiceServicer):
+    def GetAllProducts(self, request, context):
+        products = listAllProducts()
+        product_protos = [products_pb2.Product(
+            product_id=product['product_id'],
+            product_category_name=product['product_category_name'],
+            product_name_length=product['product_name_length'],
+            product_description_length=product['product_description_length'],
+            product_photos_qty=product['product_photos_qty'],
+            product_weight_g=product['product_weight_g'],
+            product_length_cm=product['product_length_cm'],
+            product_height_cm=product['product_height_cm'],
+            product_width_cm=product['product_width_cm']
+        ) for product in products]
+        return products_pb2.ProductList(products=product_protos)
+
+    def CreateProduct(self, request, context):
+        createProduct((
+            request.product_id,
+            request.product_category_name,
+            request.product_name_length,
+            request.product_description_length,
+            request.product_photos_qty,
+            request.product_weight_g,
+            request.product_length_cm,
+            request.product_height_cm,
+            request.product_width_cm
+        ))
+        return request
+
+    def UpdateProduct(self, request, context):
+        updateProduct(request.product_id, (
+            request.product_category_name,
+            request.product_name_length,
+            request.product_description_length,
+            request.product_photos_qty,
+            request.product_weight_g,
+            request.product_length_cm,
+            request.product_height_cm,
+            request.product_width_cm
+        ))
+        return request
+
+# Inicialização do servidor gRPC
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    products_pb2_grpc.add_ProductServiceServicer_to_server(ProductService(), server)
+    server.add_insecure_port('[::]:50052')  # Porta gRPC ajustada para 50052
+    server.start()
+    server.wait_for_termination()
+
 # Rota para testar a conexão com o banco de dados
 @app.route('/')
 def heartbeat():
@@ -115,7 +172,7 @@ def heartbeat():
     else:
         return jsonify({'status': 'error', 'message': 'Database connection error'})
 
-# Rota para listar todos os produtos
+# Rota para listar todos os produtos (para uso interno, não para chamadas gRPC)
 @app.route('/products', methods=['GET'])
 def getAllProducts():
     products = listAllProducts()
@@ -124,7 +181,7 @@ def getAllProducts():
     else:
         return jsonify({'status': 'error', 'message': 'Failed to retrieve products'})
 
-# Rota para criar um novo produto
+# Rota para criar um novo produto (para uso interno, não para chamadas gRPC)
 @app.route('/products', methods=['POST'])
 def createNewProduct():
     productData = request.json
@@ -133,12 +190,12 @@ def createNewProduct():
     else:
         return jsonify({'status': 'error', 'message': 'Failed to create product'})
 
-# Rota para atualizar um produto
+# Rota para atualizar um produto (para uso interno, não para chamadas gRPC)
 @app.route('/products/<string:productId>', methods=['PUT'])
 def updateExistingProduct(productId):
     newProductData = (
         request.json.get('product_category_name'),
-        request.json.get('product_name_lenght'),
+        request.json.get('product_name_length'),
         request.json.get('product_description_length'),
         request.json.get('product_photos_qty'),
         request.json.get('product_weight_g'),
@@ -151,7 +208,7 @@ def updateExistingProduct(productId):
     else:
         return jsonify({'status': 'error', 'message': 'Failed to update product'})
 
-# Rota para eliminar todos os produtos
+# Rota para eliminar todos os produtos (para uso interno, não para chamadas gRPC)
 @app.route('/products', methods=['DELETE'])
 def deleteAllExistingProducts():
     if deleteAllProducts():
@@ -160,4 +217,5 @@ def deleteAllExistingProducts():
         return jsonify({'status': 'error', 'message': 'Failed to delete all products'})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    serve()
+    app.run(host='0.0.0.0', port=5000)
