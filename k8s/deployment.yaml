@@ -4,7 +4,7 @@ metadata:
   name: microservices-ingress
 spec:
   rules:
-    - host: domain-or-ip
+    - host: "34.66.194.137"
       http:
         paths:
           - pathType: Prefix
