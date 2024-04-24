@@ -4,30 +4,29 @@ metadata:
   name: microservices-ingress
 spec:
   rules:
-    - host: "34.66.194.137"
-      http:
-        paths:
-          - pathType: Prefix
-            path: "/orders"
-            backend:
-              service:
-                name: ms-orders-service
-                port:
-                  number: 8080
-          - pathType: Prefix
-            path: "/customers"
-            backend:
-              service:
-                name: ms-customers-service
-                port:
-                  number: 8080
-          - pathType: Prefix
-            path: "/products"
-            backend:
-              service:
-                name: ms-products-service
-                port:
-                  number: 8080
+    http:
+      paths:
+        - pathType: Prefix
+          path: "/orders"
+          backend:
+            service:
+              name: ms-orders-service
+              port:
+                number: 8080
+        - pathType: Prefix
+          path: "/customers"
+          backend:
+            service:
+              name: ms-customers-service
+              port:
+                number: 8080
+        - pathType: Prefix
+          path: "/products"
+          backend:
+            service:
+              name: ms-products-service
+              port:
+                number: 8080
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
