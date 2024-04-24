@@ -68,4 +68,4 @@ spec:
             - name: MYSQL_TCP_PORT
               value: "3306"
           ports:
-            - containerPort: 8080
+            - containerPort: 5000
