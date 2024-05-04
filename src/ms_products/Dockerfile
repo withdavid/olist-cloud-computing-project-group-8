@@ -7,6 +7,8 @@ WORKDIR /app
 # Copia os arquivos necessários para o diretório de trabalho do contêiner
 COPY requirements.txt /app
 COPY app.py /app
+COPY products_pb2.py /app
+COPY products_pb2_grpc.py /app
 
 # Instala as dependências Python especificadas no arquivo requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
