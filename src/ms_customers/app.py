@@ -4,8 +4,8 @@ import os
 
 import grpc
 from concurrent import futures
-import customer_pb2
-import customer_pb2_grpc
+import customers_pb2
+import customers_pb2_grpc
 
 app = Flask(__name__)
 
@@ -40,17 +40,17 @@ def testDbConnection():
         return {'status': 'error', 'message': str(e)}
 
 # Integração do gRPC
-class CustomerService(customer_pb2_grpc.CustomerServiceServicer):
+class CustomerService(customers_pb2_grpc.CustomerServiceServicer):
     def GetAllCustomers(self, request, context):
         customers = listAllCustomers()
-        customer_protos = [customer_pb2.Customer(
+        customer_protos = [customers_pb2.Customer(
             customer_id=customer['customer_id'],
             customer_unique_id=customer['customer_unique_id'],
             customer_zip_code_prefix=customer['customer_zip_code_prefix'],
             customer_city=customer['customer_city'],
             customer_state=customer['customer_state']
         ) for customer in customers]
-        return customer_pb2.CustomerList(customers=customer_protos)
+        return customers_pb2.CustomerList(customers=customer_protos)
 
     def CreateCustomer(self, request, context):
         customer_data = (
@@ -68,7 +68,7 @@ class CustomerService(customer_pb2_grpc.CustomerServiceServicer):
 
     def DeleteAllCustomers(self, request, context):
         if deleteAllCustomers():
-            return customer_pb2.Empty()
+            return customers_pb2.Empty()
         else:
             context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details("Failed to delete all customers")
@@ -166,7 +166,7 @@ def deleteAllExistingCustomers():
 # Integração do gRPC
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    customer_pb2_grpc.add_CustomerServiceServicer_to_server(CustomerService(), server)
+    customers_pb2_grpc.add_CustomerServiceServicer_to_server(CustomerService(), server)
     server.add_insecure_port('[::]:50052')  # Use uma porta diferente para cada microserviço
     server.start()
     server.wait_for_termination()
