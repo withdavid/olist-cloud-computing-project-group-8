@@ -27,6 +27,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - '5001:5000'
+      - '50051:50051'
     depends_on:
       - mysql_customers
     env_file:

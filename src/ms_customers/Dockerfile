@@ -14,7 +14,7 @@ COPY customers_pb2_grpc.py /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Exponha a porta em que a aplicação estará em execução
-EXPOSE 5001
+EXPOSE 5001 50051
 
 # Comando para iniciar a aplicação
 CMD ["python", "app.py"]

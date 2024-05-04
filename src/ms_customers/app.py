@@ -167,7 +167,7 @@ def deleteAllExistingCustomers():
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     customers_pb2_grpc.add_CustomerServiceServicer_to_server(CustomerService(), server)
-    server.add_insecure_port('[::]:50052')  # Use uma porta diferente para cada microserviço
+    server.add_insecure_port('[::]:50051')  # Use uma porta diferente para cada microserviço
     server.start()
     server.wait_for_termination()
 
