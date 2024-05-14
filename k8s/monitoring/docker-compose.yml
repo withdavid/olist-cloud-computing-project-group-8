@@ -1,0 +1,15 @@
+version: '3'
+
+# STEP BY STEP:
+# https://medium.com/cloud-native-daily/monitoring-kubernetes-pods-resource-usage-with-prometheus-and-grafana-c17848febadc
+# https://gcore.com/learning/kubernetes-monitoring-using-prometheus/
+
+
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_data:/prometheus/data # adaptar para volume persistente na cloud

@@ -4,6 +4,7 @@ rem Iniciar os containers para cada serviço
 docker-compose -f ..\src\ms_orders\docker-compose.yml up -d
 docker-compose -f ..\src\ms_customers\docker-compose.yml up -d
 docker-compose -f ..\src\ms_products\docker-compose.yml up -d
+docker-compose -f ..\k8s\monitoring\docker-compose.yml up -d
 
 rem Aguardar alguns segundos para os containers inicializarem completamente
 timeout /t 30 /nobreak >nul
