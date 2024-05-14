@@ -1,4 +1,4 @@
-Claro, aqui está a lista de tarefas com checkboxes nos entregáveis para cada fase:
+## OLIST CLOUD PROJECT
 
 ### Fase 1: Definição do Conjunto de Dados e Capacidades de Negócio
 - **Tarefa:** Selecionar um conjunto de dados que atenda aos critérios especificados e definir as capacidades de negócio.
