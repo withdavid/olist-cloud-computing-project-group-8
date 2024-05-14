@@ -20,7 +20,7 @@ To stop the containers, execute the following files:
 
 The infrastructure of the Olist E-commerce project is represented by the following diagram:
 
-![Infrastructure Diagram](diagram.png)
+![Infrastructure Diagram](./docs/architecture-definition/diagram.png)
 
 This diagram illustrates the cloud architecture used in the project, including the different components and how they communicate with each other.
 
