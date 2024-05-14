@@ -1,5 +1,9 @@
 # README - Olist E-commerce Project in Cloud Computing
 
+## To-Do List
+
+For a detailed breakdown of tasks and deliverables for each phase of the project, please refer to the [todo.md](./todo.md) file.
+
 ## Build and Execution Instructions
 
 To compile and run the project, follow the instructions below:
