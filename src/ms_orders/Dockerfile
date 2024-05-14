@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Copia os arquivos necessários para o diretório de trabalho do contêiner
 COPY requirements.txt /app
+COPY .env /app
 COPY app.py /app
 COPY orders_pb2.py /app
 COPY orders_pb2_grpc.py /app
