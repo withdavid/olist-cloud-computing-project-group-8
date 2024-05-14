@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 import mysql.connector
 import os
-
+import threading
 import grpc
 from concurrent import futures
 import products_pb2
@@ -217,5 +217,6 @@ def deleteAllExistingProducts():
         return jsonify({'status': 'error', 'message': 'Failed to delete all products'})
 
 if __name__ == '__main__':
-    serve()
+    grpc_server_thread = threading.Thread(target=serve)
+    grpc_server_thread.start()
     app.run(host='0.0.0.0', port=5000)

@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 import mysql.connector
 import os
-
+import threading
 import grpc
 from concurrent import futures
 import customers_pb2
@@ -172,5 +172,6 @@ def serve():
     server.wait_for_termination()
 
 if __name__ == '__main__':
-    serve()
+    grpc_server_thread = threading.Thread(target=serve)
+    grpc_server_thread.start()
     app.run(host='0.0.0.0', port=5000)

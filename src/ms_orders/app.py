@@ -1,9 +1,9 @@
 from flask import Flask, jsonify, request
 import mysql.connector
 import os
+import threading
 import grpc
 from concurrent import futures
-import threading
 import orders_pb2
 import orders_pb2_grpc
 
