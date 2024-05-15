@@ -18,8 +18,6 @@ services:
     volumes:
       - ./mysql_data_products:/var/lib/mysql
       - ./utils/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    build:
-      context: .
 
   api:
     build:
