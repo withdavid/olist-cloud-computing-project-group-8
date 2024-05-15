@@ -11,7 +11,9 @@ services:
       MYSQL_PASSWORD: 'olist_password'
       MYSQL_ROOT_PASSWORD: 'root_password'
     ports:
+      - '3309:3306'
     expose:
+      - '3309'
     volumes:
       - ./mysql_data_orders:/var/lib/mysql
       - ./utils/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
