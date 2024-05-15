@@ -76,14 +76,16 @@ def createOrder(orderData):
         return False
 
 # Função para atualizar uma order
-def updateOrder(orderId, newOrderStatus):
+## AJUSTAR A FUNÇAO, NÃO ESTA A ATUALIZAR CAMPOS DE DATETIME,
+
+def updateOrder(orderId, orderData):
     try:
         connection = mysql.connector.connect(**dbConfig)
         cursor = connection.cursor()
 
         # Atualizar status da order
-        query = "UPDATE orders SET order_status = %s WHERE order_id = %s"
-        cursor.execute(query, (newOrderStatus, orderId))
+        query = "UPDATE orders SET order_status = %s, order_purchase_timestamp = %s, order_approved_at = %s, order_delivered_carrier_date = %s, order_delivered_customer_date = %s, order_estimated_delivery_date = %s WHERE order_id = %s"
+        cursor.execute(query, (orderData["order_status"], orderData["order_purchase_timestamp"], orderData["order_approved_at"], orderData["order_delivered_carrier_date"], orderData["order_delivered_customer_date"], orderData["order_estimated_delivery_date"], orderId))
         connection.commit()
 
         cursor.close()
@@ -91,7 +93,9 @@ def updateOrder(orderId, newOrderStatus):
 
         return True
     except Exception as e:
+        print(e)
         return False
+
 
 # Função para eliminar todas as orders
 def deleteAllOrders():
@@ -141,8 +145,8 @@ def createNewOrder():
 # Rota para atualizar uma order
 @app.route('/orders/<string:orderId>', methods=['PUT'])
 def updateExistingOrder(orderId):
-    newOrderStatus = request.json.get('order_status')
-    if updateOrder(orderId, newOrderStatus):
+    orderData = request.json
+    if updateOrder(orderId, orderData):
         return jsonify({'status': 'success', 'message': 'Order updated successfully'})
     else:
         return jsonify({'status': 'error', 'message': 'Failed to update order'})
