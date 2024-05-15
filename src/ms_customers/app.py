@@ -99,7 +99,10 @@ def createCustomer(customerData):
 
         # Inserir novo cliente
         query = "INSERT INTO customers (customer_id, customer_unique_id, customer_zip_code_prefix, customer_city, customer_state) VALUES (%s, %s, %s, %s, %s)"
-        cursor.execute(query, customerData)
+        
+        values = customerData["customer_id"], customerData["customer_unique_id"], customerData["customer_zip_code_prefix"], customerData["customer_city"], customerData["customer_state"]
+        
+        cursor.execute(query, values)
         connection.commit()
 
         cursor.close()
