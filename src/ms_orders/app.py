@@ -76,8 +76,6 @@ def createOrder(orderData):
         return False
 
 # Função para atualizar uma order
-## AJUSTAR A FUNÇAO, NÃO ESTA A ATUALIZAR CAMPOS DE DATETIME,
-
 def updateOrder(orderId, orderData):
     try:
         connection = mysql.connector.connect(**dbConfig)

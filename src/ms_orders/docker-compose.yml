@@ -17,12 +17,7 @@ services:
     volumes:
       - ./mysql_data_orders:/var/lib/mysql
       - ./utils/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
-<<<<<<< Updated upstream
   
-=======
-      # dockerfile: Dockerfile.mysql
-
->>>>>>> Stashed changes
   api:
     build:
       context: .
