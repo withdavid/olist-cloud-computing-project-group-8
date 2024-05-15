@@ -4,7 +4,10 @@ import os
 import threading
 import grpc
 from concurrent import futures
-import orders_pb2
+from orders_pb2 import( 
+    CustomerOrder,
+    CustomerResponse
+)
 import orders_pb2_grpc
 
 app = Flask(__name__)
@@ -48,6 +51,24 @@ def listAllOrders():
         # Consulta para obter todas as orders
         query = "SELECT * FROM orders"
         cursor.execute(query)
+        orders = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return orders
+    except Exception as e:
+        return None
+    
+    # Função para listar todas as orders do cliente
+def listClienteOrders(clienteId):
+    try:
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor(dictionary=True)
+
+        # Consulta para obter todas as orders
+        query = "SELECT customer_id, order_id, order_status, order_delivered_customer_date FROM orders WHERE customer_id = %s"
+        cursor.execute(query, clienteId)
         orders = cursor.fetchall()
 
         cursor.close()
@@ -162,27 +183,15 @@ def deleteAllExistingOrders():
 # Implementação do serviço gRPC
 class OrderService(orders_pb2_grpc.OrderServiceServicer):
     def GetAllOrders(self, request, context):
-        orders = listAllOrders()
-        order_protos = [orders_pb2.Order(
-            order_id=order['order_id'],
-            customer_id=order['customer_id'],
-            order_status=order['order_status'],
-            # adicione outros campos conforme necessário
-        ) for order in orders]
-        return orders_pb2.OrderList(orders=order_protos)
-
-    def CreateOrder(self, request, context):
-        createOrder((
-            request.order_id,
-            request.customer_id,
-            request.order_status,
-            # adicione outros campos conforme necessário
-        ))
-        return request
-
-    def UpdateOrderStatus(self, request, context):
-        updateOrder(request.order_id, request.new_status)
-        return request
+        clienteId = request.customer_id
+        orders = listClienteOrders(clienteId)
+#         order_protos = [orders_pb2.(
+#             order_id= order['order_id'],
+#             customer_id=order['customer_id'],
+#             order_status=order['order_status'],
+#             # adicione outros campos conforme necessário
+#         ) for order in orders] 
+        return CustomerResponse( costumers_orders = orders )
 
 # Função para iniciar o servidor gRPC
 def serve():
