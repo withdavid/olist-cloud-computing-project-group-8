@@ -24,7 +24,7 @@ with engine.connect() as conn:
     result = conn.execute(text('SELECT COUNT(*) FROM orders'))
     if result.scalar() == 0:
         # CSV do dataset
-        csv_file = './dataset/olist_orders_dataset.csv'
+        csv_file = '../dataset/olist_orders_dataset.csv'
         
         # Load CSV file
         df = pd.read_csv(csv_file)
