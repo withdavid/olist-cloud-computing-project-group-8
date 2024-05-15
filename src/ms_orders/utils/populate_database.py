@@ -3,12 +3,13 @@ from sqlalchemy import create_engine, inspect, text
 
 # MYSQL_INFO
 MYSQL_HOST = '127.0.0.1'
+MYSQL_PORT = '3309'
 MYSQL_DATABASE = 'olist_orders'
 MYSQL_USER = 'olist_myuser'
 MYSQL_PASSWORD = 'olist_password'
 
 # MySQL Conn
-engine = create_engine(f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}')
+engine = create_engine(f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}')
 
 # Verifica se a tabela orders já existe
 inspector = inspect(engine)

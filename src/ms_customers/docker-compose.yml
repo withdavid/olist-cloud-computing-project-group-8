@@ -20,7 +20,7 @@ services:
       - ./utils/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   api:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     ports:
