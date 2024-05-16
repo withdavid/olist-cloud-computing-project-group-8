@@ -100,7 +100,13 @@ def createCustomer(customerData):
         # Inserir novo cliente
         query = "INSERT INTO customers (customer_id, customer_unique_id, customer_zip_code_prefix, customer_city, customer_state) VALUES (%s, %s, %s, %s, %s)"
         
-        values = customerData["customer_id"], customerData["customer_unique_id"], customerData["customer_zip_code_prefix"], customerData["customer_city"], customerData["customer_state"]
+        values = (
+            customerData['customer_id'],
+            customerData['customer_unique_id'],
+            customerData['customer_zip_code_prefix'],
+            customerData['customer_city'],
+            customerData['customer_state']
+            )
         
         cursor.execute(query, values)
         connection.commit()
@@ -120,7 +126,14 @@ def updateCustomerData(customer_id, customerData):
 
         # Atualizar os dados do cliente
         query = "UPDATE customers SET customer_unique_id = %s, customer_zip_code_prefix = %s, customer_city = %s, customer_state = %s WHERE customer_id = %s"
-        values = (customerData["customer_unique_id"], customerData["customer_zip_code_prefix"], customerData["customer_city"], customerData["customer_state"], customer_id)
+        
+        values = (
+            customerData['customer_unique_id'],
+            customerData['customer_zip_code_prefix'],
+            customerData['customer_city'],
+            customerData['customer_state'],
+            customer_id
+            )
         
         cursor.execute(query, values)
         connection.commit()

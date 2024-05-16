@@ -65,7 +65,17 @@ def createOrder(orderData):
         # Inserir nova order
         query = "INSERT INTO orders (order_id, customer_id, order_status, order_purchase_timestamp, order_approved_at, order_delivered_carrier_date, order_delivered_customer_date, order_estimated_delivery_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
                 
-        values = (orderData['order_id'], orderData['customer_id'], orderData['order_status'], orderData['order_purchase_timestamp'], orderData['order_approved_at'], orderData['order_delivered_carrier_date'], orderData['order_delivered_customer_date'], orderData['order_estimated_delivery_date'])
+        values = (
+            orderData['order_id'],
+            orderData['customer_id'],
+            orderData['order_status'],
+            orderData['order_purchase_timestamp'],
+            orderData['order_approved_at'],
+            orderData['order_delivered_carrier_date'],
+            orderData['order_delivered_customer_date'],
+            orderData['order_estimated_delivery_date']
+            )
+        
         cursor.execute(query, values)
         connection.commit()
 
@@ -85,7 +95,17 @@ def updateOrder(orderId, orderData):
         # Atualizar status da order
         query = "UPDATE orders SET order_status = %s, order_purchase_timestamp = %s, order_approved_at = %s, order_delivered_carrier_date = %s, order_delivered_customer_date = %s, order_estimated_delivery_date = %s WHERE order_id = %s"
         
-        cursor.execute(query, (orderData["order_status"], orderData["order_purchase_timestamp"], orderData["order_approved_at"], orderData["order_delivered_carrier_date"], orderData["order_delivered_customer_date"], orderData["order_estimated_delivery_date"], orderId))
+        values = (
+            orderData['order_status'],
+            orderData['order_purchase_timestamp'],
+            orderData['order_approved_at'],
+            orderData['order_delivered_carrier_date'],
+            orderData['order_delivered_customer_date'],
+            orderData['order_estimated_delivery_date'],
+            orderId
+            )
+
+        cursor.execute(query, values)
         connection.commit()
 
         cursor.close()
