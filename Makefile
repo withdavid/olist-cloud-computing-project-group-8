@@ -60,7 +60,7 @@ deploy-kubernetes: ## deploy kubernetes
 	kubectl apply -f src/ms_orders/k8s/
 	kubectl apply -f src/ms_products/k8s/
 	kubectl apply -f src/ms_customers/k8s/
-.PHONY: deploy-kubernets
+.PHONY: deploy-kubernetes
 
 delete-kubernetes: ## delete kubernetes
 	kubectl delete -f k8s/
