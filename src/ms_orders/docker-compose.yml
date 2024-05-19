@@ -10,19 +10,15 @@ services:
       MYSQL_USER: 'olist_myuser'
       MYSQL_PASSWORD: 'olist_password'
       MYSQL_ROOT_PASSWORD: 'root_password'
+      MYSQL_TCP_PORT: 3309
     ports:
-      - '3309:3306'
+      - '3309:3309'
     expose:
       - '3309'
     volumes:
       - ./mysql_data_orders:/var/lib/mysql
       - ./utils/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
-<<<<<<< Updated upstream
   
-=======
-      # dockerfile: Dockerfile.mysql
-
->>>>>>> Stashed changes
   api:
     build:
       context: .

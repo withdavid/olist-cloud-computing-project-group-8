@@ -30,6 +30,16 @@ with engine.connect() as conn:
         # Load CSV file
         df = pd.read_csv(csv_file)
 
+        # Converte as colunas de datas para o formato YYYY-MM-DD HH:MM
+        date_columns = [
+            'order_purchase_timestamp', 'order_approved_at', 
+            'order_delivered_carrier_date', 'order_delivered_customer_date', 
+            'order_estimated_delivery_date'
+        ]
+        
+        for col in date_columns:
+            df[col] = pd.to_datetime(df[col], format='%d/%m/%Y %H:%M')
+
         # Insert on DB
         print("Populating data to table orders...")
         df.to_sql('orders', con=engine, if_exists='append', index=False)

@@ -10,15 +10,36 @@ from orders_pb2 import(
 )
 import orders_pb2_grpc
 
+# import google.oauth2 
+
 app = Flask(__name__)
+
 
 # Configurações do banco de dados MySQL
 dbConfig = {
     'host': os.environ['MYSQL_HOST'],
     'user': os.environ['MYSQL_USER'],
     'password': os.environ['MYSQL_PASSWORD'],
-    'database': os.environ['MYSQL_DATABASE']
+    'database': os.environ['MYSQL_DATABASE'],
+    'port': 3309
 }
+
+# API KEY: AIzaSyBNpbxlyujXXCcyxKNK64Wk3mbqlCWQx3w
+
+
+# Função para verificar a chave de API
+# def verify_api_key(api_key):
+#     try:
+#         # Carrega a chave de API do arquivo JSON
+#         creds, project = google.auth.default(scopes=['https://www.googleapis.com/auth/cloud-platform'])
+        
+#         # Verifica se a chave de API é válida
+#         if api_key == creds.token:
+#             return True
+#         else:
+#             return False
+#     except Exception as e:
+#         return False
 
 # Função para testar a conexão com o banco de dados
 def testDbConnection():
@@ -77,16 +98,27 @@ def listClienteOrders(clienteId):
         return orders
     except Exception as e:
         return None
-
-# Função para criar uma nova order
 def createOrder(orderData):
     try:
         connection = mysql.connector.connect(**dbConfig)
         cursor = connection.cursor()
 
         # Inserir nova order
-        query = "INSERT INTO orders (order_id, customer_id, order_status, order_purchase_timestamp, order_approved_at, order_delivered_carrier_date, order_delivered_customer_date, order_estimated_delivery_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, orderData)
+        query = "INSERT INTO orders (order_id, product_id, customer_id, order_status, order_purchase_timestamp, order_approved_at, order_delivered_carrier_date, order_delivered_customer_date, order_estimated_delivery_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                
+        values = (
+            orderData['order_id'],
+            orderData['product_id'],
+            orderData['customer_id'],
+            orderData['order_status'],
+            orderData['order_purchase_timestamp'],
+            orderData['order_approved_at'],
+            orderData['order_delivered_carrier_date'],
+            orderData['order_delivered_customer_date'],
+            orderData['order_estimated_delivery_date']
+            )
+        
+        cursor.execute(query, values)
         connection.commit()
 
         cursor.close()
@@ -97,8 +129,6 @@ def createOrder(orderData):
         return False
 
 # Função para atualizar uma order
-## AJUSTAR A FUNÇAO, NÃO ESTA A ATUALIZAR CAMPOS DE DATETIME,
-
 def updateOrder(orderId, orderData):
     try:
         connection = mysql.connector.connect(**dbConfig)
@@ -106,7 +136,18 @@ def updateOrder(orderId, orderData):
 
         # Atualizar status da order
         query = "UPDATE orders SET order_status = %s, order_purchase_timestamp = %s, order_approved_at = %s, order_delivered_carrier_date = %s, order_delivered_customer_date = %s, order_estimated_delivery_date = %s WHERE order_id = %s"
-        cursor.execute(query, (orderData["order_status"], orderData["order_purchase_timestamp"], orderData["order_approved_at"], orderData["order_delivered_carrier_date"], orderData["order_delivered_customer_date"], orderData["order_estimated_delivery_date"], orderId))
+        
+        values = (
+            orderData['order_status'],
+            orderData['order_purchase_timestamp'],
+            orderData['order_approved_at'],
+            orderData['order_delivered_carrier_date'],
+            orderData['order_delivered_customer_date'],
+            orderData['order_estimated_delivery_date'],
+            orderId
+            )
+
+        cursor.execute(query, values)
         connection.commit()
 
         cursor.close()
@@ -157,11 +198,24 @@ def getAllOrders():
 # Rota para criar uma nova order
 @app.route('/orders', methods=['POST'])
 def createNewOrder():
+    # api_key = request.headers.get('X-API-Key')
+    # if not api_key:
+    #     return jsonify({'error': 'API key missing'}), 401
+    
+    # if verify_api_key(api_key):
+    #     # Se a chave de API for válida
     orderData = request.json
+
     if createOrder(orderData):
         return jsonify({'status': 'success', 'message': 'Order created successfully'})
     else:
         return jsonify({'status': 'error', 'message': 'Failed to create order'})
+        
+            # return jsonify({'message': 'Authenticated successfully', 'user': id_info}), 200
+    # else:
+    #     return jsonify({'error': 'Invalid API KEY'}), 401
+        
+    
 
 # Rota para atualizar uma order
 @app.route('/orders/<string:orderId>', methods=['PUT'])
@@ -179,6 +233,8 @@ def deleteAllExistingOrders():
         return jsonify({'status': 'success', 'message': 'All orders deleted successfully'})
     else:
         return jsonify({'status': 'error', 'message': 'Failed to delete all orders'})
+
+
 
 # Implementação do serviço gRPC
 class OrderService(orders_pb2_grpc.OrderServiceServicer):
