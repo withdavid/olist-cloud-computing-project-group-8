@@ -3,25 +3,14 @@ syntax = "proto3";
 package customer;
 
 service CustomerService {
-    rpc GetAllCustomers (CustomerRequest) returns (CustomerList) {}
-    rpc CreateCustomer (Customer) returns (Customer) {}
-    rpc DeleteAllCustomers (Empty) returns (Empty) {}
-}
-
-message Customer {
-    string customer_id = 1;
-    string customer_unique_id = 2;
-    string customer_zip_code_prefix = 3;
-    string customer_city = 4;
-    string customer_state = 5;
+    rpc IsCustomer (CustomerRequest) returns (CustomerResponse) {}
 }
 
 message CustomerRequest {
-    // todo
+    // ID do cliente
+    string customer_id = 1;
 }
 
-message CustomerList {
-    repeated Customer customers = 1;
+message CustomerResponse {
+    string msg = 1;
 }
-
-message Empty {}

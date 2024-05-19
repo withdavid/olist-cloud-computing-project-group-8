@@ -10,6 +10,9 @@ COPY .env /app
 COPY app.py /app
 COPY customers_pb2.py /app
 COPY customers_pb2_grpc.py /app
+COPY orders_cliente.py /app
+COPY orders_pb2_grpc.py /app
+COPY orders_pb2.py /app
 
 # Instala as dependências Python especificadas no arquivo requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt

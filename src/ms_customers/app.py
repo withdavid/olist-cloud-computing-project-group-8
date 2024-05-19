@@ -4,10 +4,14 @@ import os
 import threading
 import grpc
 from concurrent import futures
-import customers_pb2
+from customers_pb2 import(CustomerRequest, CustomerResponse)
 import customers_pb2_grpc
+from google.protobuf.json_format import MessageToDict
+from orders_cliente import OrdersClient
 
 app = Flask(__name__)
+
+orders_svc = OrdersClient()
 
 # Configurações do banco de dados MySQL
 dbConfig = {
@@ -39,6 +43,7 @@ def testDbConnection():
     except Exception as e:
         return {'status': 'error', 'message': str(e)}
 
+
 # Função para listar todos os clientes
 def listAllCustomers():
     try:
@@ -54,6 +59,28 @@ def listAllCustomers():
         connection.close()
 
         return customers
+    except Exception as e:
+        return None
+
+# Função para listar todos os clientes
+def customerExist(customerId):
+    try:
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor(dictionary=True)
+
+        # Consulta para obter todos os clientes
+        query = "SELECT * FROM customers where customer_id = %s"
+        cursor.execute(query, (customerId,))
+        customers = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        # Verificar se a consulta retornou dados
+        if customers:
+            return True  # A consulta retornou dados
+        else:
+            return False  # A consulta não retornou dados
     except Exception as e:
         return None
 
@@ -140,6 +167,18 @@ def heartbeat():
         return jsonify({'status': 'error', 'message': 'Database connection error'})
 
 # Rota para listar todos os clientes
+@app.route('/customers/<string:clienteId>/orders', methods=['GET'])
+def getCustomersOrders(clienteId):
+    customers = orders_svc.getUserOrders(clienteId)
+
+    if customers is not None:
+        # Converta o objeto protobuf para um dicionário
+        result = MessageToDict(customers)
+        return jsonify({'status': 'success', 'customers': result})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to retrieve customers orders'})
+    
+# Rota para listar todos os clientes
 @app.route('/customers', methods=['GET'])
 def getAllCustomers():
     customers = listAllCustomers()
@@ -177,37 +216,13 @@ def deleteAllExistingCustomers():
 
 # Integração do gRPC
 class CustomerService(customers_pb2_grpc.CustomerServiceServicer):
-    def GetAllCustomers(self, request, context):
-        customers = listAllCustomers()
-        customer_protos = [customers_pb2.Customer(
-            customer_id=customer['customer_id'],
-            customer_unique_id=customer['customer_unique_id'],
-            customer_zip_code_prefix=customer['customer_zip_code_prefix'],
-            customer_city=customer['customer_city'],
-            customer_state=customer['customer_state']
-        ) for customer in customers]
-        return customers_pb2.CustomerList(customers=customer_protos)
+    def IsCustomer(self, request, context):
+        customers = customerExist(request.customer_id)
 
-    def CreateCustomer(self, request, context):
-        customer_data = (
-            request.customer_id,
-            request.customer_unique_id,
-            request.customer_zip_code_prefix,
-            request.customer_city,
-            request.customer_state
-        )
-        if createCustomer(customer_data):
-            return request
-        else:
-            context.set_code(grpc.StatusCode.INTERNAL)
-            context.set_details("Failed to create customer")
-
-    def DeleteAllCustomers(self, request, context):
-        if deleteAllCustomers():
-            return customers_pb2.Empty()
-        else:
-            context.set_code(grpc.StatusCode.INTERNAL)
-            context.set_details("Failed to delete all customers")
+        if customers:
+         return CustomerResponse(msg="true")
+        
+        return CustomerResponse(msg="false")
 
 # Integração do gRPC
 def serve():

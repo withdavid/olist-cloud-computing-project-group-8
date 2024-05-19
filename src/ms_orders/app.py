@@ -9,10 +9,15 @@ from orders_pb2 import(
     CustomerResponse
 )
 import orders_pb2_grpc
+from customers_cliente import CustomerClient
+from google.protobuf.json_format import MessageToDict
 
 # import google.oauth2 
 
 app = Flask(__name__)
+
+
+customer_svc = CustomerClient()
 
 
 # Configurações do banco de dados MySQL
@@ -86,10 +91,10 @@ def listClienteOrders(clienteId):
     try:
         connection = mysql.connector.connect(**dbConfig)
         cursor = connection.cursor(dictionary=True)
-
+        print("Chegou aqui ")
         # Consulta para obter todas as orders
         query = "SELECT customer_id, order_id, order_status, order_delivered_customer_date FROM orders WHERE customer_id = %s"
-        cursor.execute(query, clienteId)
+        cursor.execute(query, (clienteId,))
         orders = cursor.fetchall()
 
         cursor.close()
@@ -206,16 +211,19 @@ def createNewOrder():
     #     # Se a chave de API for válida
     orderData = request.json
 
-    if createOrder(orderData):
-        return jsonify({'status': 'success', 'message': 'Order created successfully'})
-    else:
-        return jsonify({'status': 'error', 'message': 'Failed to create order'})
+    #Requisição ao serviço Customer via grpc
+    exists = customer_svc.IsCustomer(orderData['customer_id'])
+    exists = MessageToDict(exists)
+    print(f'{exists}')
+    if exists == 'true':
+        if createOrder(orderData):
+            return jsonify({'status': 'success', 'message': 'Order created successfully'})
+        else:
+            return jsonify({'status': 'error', 'message': 'Failed to create order'})
         
-            # return jsonify({'message': 'Authenticated successfully', 'user': id_info}), 200
-    # else:
-    #     return jsonify({'error': 'Invalid API KEY'}), 401
-        
+    return jsonify({'status': 'error', 'message': 'Invalid Custumer'})
     
+
 
 # Rota para atualizar uma order
 @app.route('/orders/<string:orderId>', methods=['PUT'])
@@ -238,17 +246,29 @@ def deleteAllExistingOrders():
 
 # Implementação do serviço gRPC
 class OrderService(orders_pb2_grpc.OrderServiceServicer):
-    def GetAllOrders(self, request, context):
-        clienteId = request.customer_id
-        orders = listClienteOrders(clienteId)
-#         order_protos = [orders_pb2.(
-#             order_id= order['order_id'],
-#             customer_id=order['customer_id'],
-#             order_status=order['order_status'],
-#             # adicione outros campos conforme necessário
-#         ) for order in orders] 
-        return CustomerResponse( costumers_orders = orders )
+    def GetCustomerInfo(self, request, context):
+        try:
+            print(f"Chegou aqui: {request.customer_id}")
+            clienteId = request.customer_id
+            orders = listClienteOrders(clienteId)
+            if orders is None:
+                order_protos = []
+            else:
+                order_protos = [
+                        CustomerOrder(
+                            customer_id=order['customer_id'],
+                            order_id=order['order_id'],
+                            order_status=order['order_status'],
+                            order_delivered_customer_date=order['order_delivered_customer_date'].strftime('%Y-%m-%d %H:%M:%S')
+                        ) for order in orders
+                    ]
 
+            return CustomerResponse(costumers_orders=order_protos)
+        except Exception as e:
+            context.set_details(str(e))
+            context.set_code(grpc.StatusCode.UNKNOWN)
+            return CustomerResponse()
+    
 # Função para iniciar o servidor gRPC
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

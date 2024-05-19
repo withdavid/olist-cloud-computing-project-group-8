@@ -18,8 +18,10 @@ services:
     volumes:
       - ./mysql_data_orders:/var/lib/mysql
       - ./utils/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
-  
-  api:
+    networks:
+      - shop
+
+  service_orders:
     build:
       context: .
       dockerfile: Dockerfile
@@ -30,7 +32,14 @@ services:
       - mysql_orders
     env_file:
       - .env
+    networks:
+      - shop
 
 volumes:
   mysql_data_orders:
     driver: local
+
+networks:
+  shop:
+    name: shop
+    driver: bridge
