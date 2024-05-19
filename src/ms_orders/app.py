@@ -215,13 +215,12 @@ def createNewOrder():
     exists = customer_svc.IsCustomer(orderData['customer_id'])
     exists = MessageToDict(exists)
     print(f'{exists}')
-    if exists == 'true':
+    if exists['msg'] == "true":
         if createOrder(orderData):
             return jsonify({'status': 'success', 'message': 'Order created successfully'})
         else:
             return jsonify({'status': 'error', 'message': 'Failed to create order'})
-        
-    return jsonify({'status': 'error', 'message': 'Invalid Custumer'})
+    else:   return jsonify({'status': 'error', 'message': 'Invalid Custumer'})
     
 
 
@@ -281,4 +280,4 @@ def serve():
 if __name__ == '__main__':
     grpc_server_thread = threading.Thread(target=serve)
     grpc_server_thread.start()
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
