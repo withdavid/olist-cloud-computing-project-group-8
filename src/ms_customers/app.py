@@ -43,16 +43,6 @@ def testDbConnection():
     except Exception as e:
         return {'status': 'error', 'message': str(e)}
 
-# Integração do gRPC
-class CustomerService(customers_pb2_grpc.CustomerServiceServicer):
-    def IsCustomer(self, request, context):
-        customers = customerExist(request.customer_id)
-
-        if customers:
-         return CustomerResponse(msg="true")
-        
-        return CustomerResponse(msg="false")
-
 
 # Função para listar todos os clientes
 def listAllCustomers():
@@ -102,7 +92,16 @@ def createCustomer(customerData):
 
         # Inserir novo cliente
         query = "INSERT INTO customers (customer_id, customer_unique_id, customer_zip_code_prefix, customer_city, customer_state) VALUES (%s, %s, %s, %s, %s)"
-        cursor.execute(query, customerData)
+        
+        values = (
+            customerData['customer_id'],
+            customerData['customer_unique_id'],
+            customerData['customer_zip_code_prefix'],
+            customerData['customer_city'],
+            customerData['customer_state']
+            )
+        
+        cursor.execute(query, values)
         connection.commit()
 
         cursor.close()
@@ -110,6 +109,34 @@ def createCustomer(customerData):
 
         return True
     except Exception as e:
+        return False
+
+# Função para atualizar os dados de um cliente
+def updateCustomerData(customer_id, customerData):
+    try:
+        connection = mysql.connector.connect(**dbConfig)
+        cursor = connection.cursor()
+
+        # Atualizar os dados do cliente
+        query = "UPDATE customers SET customer_unique_id = %s, customer_zip_code_prefix = %s, customer_city = %s, customer_state = %s WHERE customer_id = %s"
+        
+        values = (
+            customerData['customer_unique_id'],
+            customerData['customer_zip_code_prefix'],
+            customerData['customer_city'],
+            customerData['customer_state'],
+            customer_id
+            )
+        
+        cursor.execute(query, values)
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return True
+    except Exception as e:
+        print(e)
         return False
 
 # Função para eliminar todos os clientes
@@ -168,6 +195,15 @@ def createNewCustomer():
         return jsonify({'status': 'success', 'message': 'Customer created successfully'})
     else:
         return jsonify({'status': 'error', 'message': 'Failed to create customer'})
+    
+# Rota para atualizar um cliente
+@app.route('/customers/<string:customer_id>', methods=['PUT'])
+def updateCustomer(customer_id):
+    customerData = request.json
+    if updateCustomerData(customer_id, customerData):
+        return jsonify({'status': 'success', 'message': 'Customer data updated successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to update customer data'})
 
 # Rota para eliminar todos os clientes
 @app.route('/customers', methods=['DELETE'])
@@ -177,6 +213,16 @@ def deleteAllExistingCustomers():
     else:
         return jsonify({'status': 'error', 'message': 'Failed to delete all customers'})
 
+
+# Integração do gRPC
+class CustomerService(customers_pb2_grpc.CustomerServiceServicer):
+    def IsCustomer(self, request, context):
+        customers = customerExist(request.customer_id)
+
+        if customers:
+         return CustomerResponse(msg="true")
+        
+        return CustomerResponse(msg="false")
 
 # Integração do gRPC
 def serve():

@@ -27,6 +27,13 @@ spec:
               value: "3307"
           ports:
             - containerPort: 3307
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
           volumeMounts:
             - name: mysql-ms-customers-storage
               mountPath: /var/lib/mysql
@@ -51,7 +58,7 @@ spec:
     spec:
       containers:
         - name: ms-customers
-          image: northamerica-northeast1-docker.pkg.dev/coral-inverter-421114/fcul-project/ms_customers_api:latest
+          image: us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_customers_api:latest
           env:
             - name: MYSQL_HOST
               value: "mysql-customers-deployment"
