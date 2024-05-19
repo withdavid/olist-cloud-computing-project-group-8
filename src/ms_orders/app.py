@@ -7,7 +7,10 @@ from concurrent import futures
 import orders_pb2
 import orders_pb2_grpc
 
+# import google.oauth2 
+
 app = Flask(__name__)
+
 
 # Configurações do banco de dados MySQL
 dbConfig = {
@@ -17,6 +20,23 @@ dbConfig = {
     'database': os.environ['MYSQL_DATABASE'],
     'port': 3309
 }
+
+# API KEY: AIzaSyBNpbxlyujXXCcyxKNK64Wk3mbqlCWQx3w
+
+
+# Função para verificar a chave de API
+# def verify_api_key(api_key):
+#     try:
+#         # Carrega a chave de API do arquivo JSON
+#         creds, project = google.auth.default(scopes=['https://www.googleapis.com/auth/cloud-platform'])
+        
+#         # Verifica se a chave de API é válida
+#         if api_key == creds.token:
+#             return True
+#         else:
+#             return False
+#     except Exception as e:
+#         return False
 
 # Função para testar a conexão com o banco de dados
 def testDbConnection():
@@ -63,10 +83,11 @@ def createOrder(orderData):
         cursor = connection.cursor()
 
         # Inserir nova order
-        query = "INSERT INTO orders (order_id, customer_id, order_status, order_purchase_timestamp, order_approved_at, order_delivered_carrier_date, order_delivered_customer_date, order_estimated_delivery_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        query = "INSERT INTO orders (order_id, product_id, customer_id, order_status, order_purchase_timestamp, order_approved_at, order_delivered_carrier_date, order_delivered_customer_date, order_estimated_delivery_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 
         values = (
             orderData['order_id'],
+            orderData['product_id'],
             orderData['customer_id'],
             orderData['order_status'],
             orderData['order_purchase_timestamp'],
@@ -156,11 +177,24 @@ def getAllOrders():
 # Rota para criar uma nova order
 @app.route('/orders', methods=['POST'])
 def createNewOrder():
+    # api_key = request.headers.get('X-API-Key')
+    # if not api_key:
+    #     return jsonify({'error': 'API key missing'}), 401
+    
+    # if verify_api_key(api_key):
+    #     # Se a chave de API for válida
     orderData = request.json
+
     if createOrder(orderData):
         return jsonify({'status': 'success', 'message': 'Order created successfully'})
     else:
         return jsonify({'status': 'error', 'message': 'Failed to create order'})
+        
+            # return jsonify({'message': 'Authenticated successfully', 'user': id_info}), 200
+    # else:
+    #     return jsonify({'error': 'Invalid API KEY'}), 401
+        
+    
 
 # Rota para atualizar uma order
 @app.route('/orders/<string:orderId>', methods=['PUT'])
@@ -178,6 +212,8 @@ def deleteAllExistingOrders():
         return jsonify({'status': 'success', 'message': 'All orders deleted successfully'})
     else:
         return jsonify({'status': 'error', 'message': 'Failed to delete all orders'})
+
+
 
 # Implementação do serviço gRPC
 class OrderService(orders_pb2_grpc.OrderServiceServicer):

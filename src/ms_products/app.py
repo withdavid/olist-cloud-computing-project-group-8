@@ -64,7 +64,7 @@ def createProduct(productData):
         cursor = connection.cursor()
 
         # Inserir novo produto
-        query = "INSERT INTO products (product_id, product_category_name, product_name_length, product_description_length, product_photos_qty, product_weight_g, product_length_cm, product_height_cm, product_width_cm) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        query = "INSERT INTO products (product_id, product_category_name, product_name_length, product_description_length, product_photos_qty, product_weight_g, product_length_cm, product_height_cm, product_width_cm, price) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 
         values = (
             productData['product_id'],
@@ -75,7 +75,8 @@ def createProduct(productData):
             productData['product_weight_g'],
             productData['product_length_cm'],
             productData['product_height_cm'],
-            productData['product_width_cm']
+            productData['product_width_cm'],
+            productData['price']
         )
 
         cursor.execute(query, values)
@@ -96,7 +97,7 @@ def updateProduct(productId, newProductData):
         cursor = connection.cursor()
 
         # Atualizar o produto
-        query = "UPDATE products SET product_category_name = %s, product_name_length = %s, product_description_length = %s, product_photos_qty = %s, product_weight_g = %s, product_length_cm = %s, product_height_cm = %s, product_width_cm = %s WHERE product_id = %s"
+        query = "UPDATE products SET product_category_name = %s, product_name_length = %s, product_description_length = %s, product_photos_qty = %s, product_weight_g = %s, product_length_cm = %s, product_height_cm = %s, product_width_cm = %s, price = %s WHERE product_id = %s"
                 
         values = (
             newProductData['product_category_name'],
@@ -107,6 +108,7 @@ def updateProduct(productId, newProductData):
             newProductData['product_length_cm'],
             newProductData['product_height_cm'],
             newProductData['product_width_cm'],
+            newProductData['price'],
             productId
         )
 
@@ -120,7 +122,6 @@ def updateProduct(productId, newProductData):
     except Exception as e:
         print(e)
         return False
-
 
 # Função para eliminar todos os produtos
 def deleteAllProducts():
@@ -139,6 +140,51 @@ def deleteAllProducts():
         return True
     except Exception as e:
         return False
+
+# Rota para testar a conexão com o banco de dados
+@app.route('/')
+def heartbeat():
+    result = testDbConnection()
+    if result['status'] == 'operational':
+        return jsonify({'status': 'operational', 'message': 'Database connection operational'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Database connection error'})
+
+# Rota para listar todos os produtos (para uso interno, não para chamadas gRPC)
+@app.route('/products', methods=['GET'])
+def getAllProducts():
+    products = listAllProducts()
+    if products is not None:
+        return jsonify({'status': 'success', 'products': products})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to retrieve products'})
+
+# Rota para criar um novo produto (para uso interno, não para chamadas gRPC)
+@app.route('/products', methods=['POST'])
+def createNewProduct():
+    productData = request.json
+    if createProduct(productData):
+        return jsonify({'status': 'success', 'message': 'Product created successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to create product'})
+
+# Rota para atualizar um produto (para uso interno, não para chamadas gRPC)
+@app.route('/products/<string:productId>', methods=['PUT'])
+def updateExistingProduct(productId):
+    newProductData = request.json
+    if updateProduct(productId, newProductData):
+        return jsonify({'status': 'success', 'message': 'Product updated successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to update product'})
+
+# Rota para eliminar todos os produtos (para uso interno, não para chamadas gRPC)
+@app.route('/products', methods=['DELETE'])
+def deleteAllExistingProducts():
+    if deleteAllProducts():
+        return jsonify({'status': 'success', 'message': 'All products deleted successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to delete all products'})
+
 
 # Implementação dos métodos do serviço gRPC
 class ProductService(products_pb2_grpc.ProductServiceServicer):
@@ -192,49 +238,14 @@ def serve():
     server.start()
     server.wait_for_termination()
 
-# Rota para testar a conexão com o banco de dados
-@app.route('/')
-def heartbeat():
-    result = testDbConnection()
-    if result['status'] == 'operational':
-        return jsonify({'status': 'operational', 'message': 'Database connection operational'})
-    else:
-        return jsonify({'status': 'error', 'message': 'Database connection error'})
 
-# Rota para listar todos os produtos (para uso interno, não para chamadas gRPC)
-@app.route('/products', methods=['GET'])
-def getAllProducts():
-    products = listAllProducts()
-    if products is not None:
-        return jsonify({'status': 'success', 'products': products})
-    else:
-        return jsonify({'status': 'error', 'message': 'Failed to retrieve products'})
-
-# Rota para criar um novo produto (para uso interno, não para chamadas gRPC)
-@app.route('/products', methods=['POST'])
-def createNewProduct():
-    productData = request.json
-    if createProduct(productData):
-        return jsonify({'status': 'success', 'message': 'Product created successfully'})
-    else:
-        return jsonify({'status': 'error', 'message': 'Failed to create product'})
-
-# Rota para atualizar um produto (para uso interno, não para chamadas gRPC)
-@app.route('/products/<string:productId>', methods=['PUT'])
-def updateExistingProduct(productId):
-    newProductData = request.json
-    if updateProduct(productId, newProductData):
-        return jsonify({'status': 'success', 'message': 'Product updated successfully'})
-    else:
-        return jsonify({'status': 'error', 'message': 'Failed to update product'})
-
-# Rota para eliminar todos os produtos (para uso interno, não para chamadas gRPC)
-@app.route('/products', methods=['DELETE'])
-def deleteAllExistingProducts():
-    if deleteAllProducts():
-        return jsonify({'status': 'success', 'message': 'All products deleted successfully'})
-    else:
-        return jsonify({'status': 'error', 'message': 'Failed to delete all products'})
+# Inicialização do servidor gRPC
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    products_pb2_grpc.add_ProductServiceServicer_to_server(ProductService(), server)
+    server.add_insecure_port('[::]:50052')  # Porta gRPC ajustada para 50052
+    server.start()
+    server.wait_for_termination()
 
 if __name__ == '__main__':
     grpc_server_thread = threading.Thread(target=serve)
