@@ -26,9 +26,16 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               value: "root_password"
             - name: MYSQL_TCP_PORT
-              value: "3306"
+              value: "3309"
           ports:
-            - containerPort: 3306
+            - containerPort: 3309
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
           volumeMounts:
             - name: mysql-ms-orders-storage
               mountPath: /var/lib/mysql
