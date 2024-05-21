@@ -28,13 +28,6 @@ spec:
               value: "3307"
           ports:
             - containerPort: 3307
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "250m"
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
           volumeMounts:
             - name: mysql-ms-customers-storage
               mountPath: /var/lib/mysql
@@ -75,3 +68,10 @@ spec:
               value: "3307"
           ports:
             - containerPort: 5000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
