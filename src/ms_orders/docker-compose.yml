@@ -21,7 +21,7 @@ services:
     networks:
       - shop
 
-  service_orders:
+  api:
     build:
       context: .
       dockerfile: Dockerfile
