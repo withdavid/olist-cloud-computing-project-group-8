@@ -1,3 +1,4 @@
+# Ingress
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -28,6 +29,7 @@ spec:
                 port:
                   number: 8080
 ---
+# PersistentVolumeClaims
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -63,3 +65,217 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: ""
+---
+# Deployments (AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-orders-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-orders
+  template:
+    metadata:
+      labels:
+        app: mysql-orders
+    spec:
+      containers:
+        - name: mysql-orders
+          image: mysql:latest
+          env:
+            - name: MYSQL_DATABASE
+              value: "olist_orders"
+            - name: MYSQL_USER
+              value: "olist_myuser"
+            - name: MYSQL_PASSWORD
+              value: "olist_password"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root_password"
+            - name: MYSQL_TCP_PORT
+              value: "3309"
+          ports:
+            - containerPort: 3309
+          volumeMounts:
+            - name: mysql-orders-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-orders-storage
+          persistentVolumeClaim:
+            claimName: mysql-orders-pd-volume
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-customers-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-customers
+  template:
+    metadata:
+      labels:
+        app: mysql-customers
+    spec:
+      containers:
+        - name: mysql-customers
+          image: mysql:latest
+          env:
+            - name: MYSQL_DATABASE
+              value: "olist_customers"
+            - name: MYSQL_USER
+              value: "olist_myuser"
+            - name: MYSQL_PASSWORD
+              value: "olist_password"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root_password"
+            - name: MYSQL_TCP_PORT
+              value: "3307"
+          ports:
+            - containerPort: 3307
+          volumeMounts:
+            - name: mysql-customers-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-customers-storage
+          persistentVolumeClaim:
+            claimName: mysql-customers-pd-volume
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-products-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-products
+  template:
+    metadata:
+      labels:
+        app: mysql-products
+    spec:
+      containers:
+        - name: mysql-products
+          image: mysql:latest
+          env:
+            - name: MYSQL_DATABASE
+              value: "olist_products"
+            - name: MYSQL_USER
+              value: "olist_myuser"
+            - name: MYSQL_PASSWORD
+              value: "olist_password"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root_password"
+            - name: MYSQL_TCP_PORT
+              value: "3308"
+          ports:
+            - containerPort: 3308
+          volumeMounts:
+            - name: mysql-products-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-products-storage
+          persistentVolumeClaim:
+            claimName: mysql-products-pd-volume
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-orders-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-orders
+  template:
+    metadata:
+      labels:
+        app: ms-orders
+    spec:
+      containers:
+        - name: ms-orders
+          image: us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_orders_api:latest
+          env:
+            - name: MYSQL_HOST
+              value: "mysql-orders-deployment"
+            - name: MYSQL_DATABASE
+              value: "olist_orders"
+            - name: MYSQL_USER
+              value: "olist_myuser"
+            - name: MYSQL_PASSWORD
+              value: "olist_password"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root_password"
+            - name: MYSQL_TCP_PORT
+              value: "3309"
+          ports:
+            - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-customers-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-customers
+  template:
+    metadata:
+      labels:
+        app: ms-customers
+    spec:
+      containers:
+        - name: ms-customers
+          image: us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_customers_api:latest
+          env:
+            - name: MYSQL_HOST
+              value: "mysql-customers-deployment"
+            - name: MYSQL_DATABASE
+              value: "olist_customers"
+            - name: MYSQL_USER
+              value: "olist_myuser"
+            - name: MYSQL_PASSWORD
+              value: "olist_password"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root_password"
+            - name: MYSQL_TCP_PORT
+              value: "3307"
+          ports:
+            - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-products-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-products
+  template:
+    metadata:
+      labels:
+        app: ms-products
+    spec:
+      containers:
+        - name: ms-products
+          image: us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_products_api:latest
+          env:
+            - name: MYSQL_HOST
+              value: "mysql-products-deployment"
+            - name: MYSQL_DATABASE
+              value: "olist_products"
+            - name: MYSQL_USER
+              value: "olist_myuser"
+            - name: MYSQL_PASSWORD
+              value: "olist_password"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root_password"
+            - name: MYSQL_TCP_PORT
+              value: "3308"
+          ports:
+            - containerPort: 8080
