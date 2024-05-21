@@ -47,7 +47,7 @@ build-images: ## build docker containers
 .PHONY: build-images
 
 push-images: ## push docker images to custom docker registry
-	cd ./src/ms_customers
+	cd src/ms_customers
 	docker build -t us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_customers_api:latest .
 	docker push us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_customers_api:latest
 
