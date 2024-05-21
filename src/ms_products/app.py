@@ -142,7 +142,7 @@ def deleteAllProducts():
         return False
 
 # Rota para testar a conexão com o banco de dados
-@app.route('/')
+@app.route('/products/health')
 def heartbeat():
     result = testDbConnection()
     if result['status'] == 'operational':
