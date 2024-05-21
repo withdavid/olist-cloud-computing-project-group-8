@@ -80,7 +80,7 @@ del-pods: ## delete pods
 .PHONY: del-pods
 
 del-deploy: ## delete deploy
-	kubectl delete deployment -all
+	kubectl delete deployment --all
 .PHONY: del-deploy
 
 build-orders: ## build orders container
