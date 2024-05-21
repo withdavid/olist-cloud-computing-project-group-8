@@ -158,7 +158,7 @@ def deleteAllCustomers():
         return False
 
 # Rota para testar a conexão com o banco de dados
-@app.route('/customers/health')
+@app.route('/')
 def heartbeat():
     result = testDbConnection()
     if result['status'] == 'operational':
