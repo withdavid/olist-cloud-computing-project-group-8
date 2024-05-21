@@ -63,7 +63,7 @@ spec:
           image: us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_orders_api:latest
           env:
             - name: MYSQL_HOST
-              value: "mysql_orders"
+              value: "mysql-orders"
             - name: MYSQL_DATABASE
               value: "olist_orders"
             - name: MYSQL_USER

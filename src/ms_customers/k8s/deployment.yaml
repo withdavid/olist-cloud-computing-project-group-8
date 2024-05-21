@@ -62,7 +62,7 @@ spec:
           image: us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_customers_api:latest
           env:
             - name: MYSQL_HOST
-              value: "mysql-customers-deployment"
+              value: "mysql-customers"
             - name: MYSQL_DATABASE
               value: "olist_customers"
             - name: MYSQL_USER
