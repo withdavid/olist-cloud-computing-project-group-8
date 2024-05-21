@@ -67,19 +67,21 @@ push-images: ## push docker images to custom docker registry
 	docker push us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_orders_api:latest 
 .PHONY: push-images
 
-deploy-kubernetes: ## deploy kubernetes
+deploy: ## deploy servicestio k8s
 	kubectl apply -f k8s/
 	kubectl apply -f src/ms_orders/k8s/
 	kubectl apply -f src/ms_products/k8s/
 	kubectl apply -f src/ms_customers/k8s/
-.PHONY: deploy-kubernetes
+.PHONY: deploy
 
-delete-kubernetes: ## delete kubernetes
+del-pods: ## delete pods
 	kubectl delete -f k8s/
-	kubectl delete -f src/ms_orders/k8s/
-	kubectl delete -f src/ms_products/k8s/
-	kubectl delete -f src/ms_customers/k8s/
-.PHONY: delete-kubernets
+	kubectl delete --all pods
+.PHONY: del-pods
+
+del-deploy: ## delete deploy
+	kubectl delete deployment -all
+.PHONY: del-deploy
 
 build-orders: ## build orders container
 	docker-compose -f src/ms_orders/docker-compose.yml build --no-cache --force-rm 
