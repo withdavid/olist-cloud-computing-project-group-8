@@ -29,11 +29,28 @@ def testDbConnection():
         connection = mysql.connector.connect(**dbConfig)
         cursor = connection.cursor()
 
-        # Executa uma consulta
+        # Executa uma consulta para testar a conexão
         cursor.execute("SELECT 'ok!'")
-
-        # Obtém o resultado
         result = cursor.fetchone()
+
+        # Verifica se a tabela 'customers' existe
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM information_schema.tables 
+            WHERE table_schema = %s 
+            AND table_name = 'customers'
+        """, (dbConfig['database'],))
+        if cursor.fetchone()[0] == 0:
+            # Cria a tabela 'customers' se não existir
+            cursor.execute("""
+                CREATE TABLE customers (
+                    customer_id VARCHAR(50) PRIMARY KEY,
+                    customer_unique_id VARCHAR(50),
+                    customer_zip_code_prefix VARCHAR(10),
+                    customer_city VARCHAR(100),
+                    customer_state VARCHAR(50)
+                );
+            """)
 
         # Fecha a conexão
         cursor.close()
