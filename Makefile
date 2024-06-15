@@ -44,6 +44,7 @@ build-images: ## build docker containers
 	docker-compose -f src/ms_orders/docker-compose.yml build --no-cache --force-rm 
 	docker-compose -f src/ms_products/docker-compose.yml build --no-cache --force-rm 
 	docker-compose -f src/ms_customers/docker-compose.yml build --no-cache --force-rm
+	docker-compose -f k8s/monitoring/docker-compose.yml build --no-cache --force-rm
 .PHONY: build-images
 
 push-images: ## push docker images to custom docker registry
@@ -61,10 +62,15 @@ push-images: ## push docker images to custom docker registry
 
 	docker tag ms_customers-api:latest us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_customers_api:latest
 	docker push us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_customers_api:latest
+	
 	docker tag ms_products-api:latest us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_products_api:latest
 	docker push us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_products_api:latest
+
 	docker tag ms_orders-api:latest us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_orders_api:latest
-	docker push us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_orders_api:latest 
+	docker push us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_orders_api:latest
+
+	docker tag ms_orders-api:latest us-west1-docker.pkg.dev/olist-cloud/olist-containers/monitoring:latest
+	docker push us-west1-docker.pkg.dev/olist-cloud/olist-containers/monitoring:latest 
 .PHONY: push-images
 
 deploy: ## deploy servicestio k8s
