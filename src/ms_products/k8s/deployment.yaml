@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: mysql-products-deployment
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: mysql-products
@@ -73,7 +74,8 @@ spec:
             - name: MYSQL_TCP_PORT
               value: "3308"
           ports:
-            - containerPort: 5000
+            - containerPort: 5002
+            - containerPort: 50052
           resources:
             requests:
               memory: "64Mi"
@@ -81,3 +83,15 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 5002
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 5002
+            initialDelaySeconds: 3
+            periodSeconds: 3
