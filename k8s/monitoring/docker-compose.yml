@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3'
 
 # STEP BY STEP:
 # https://medium.com/cloud-native-daily/monitoring-kubernetes-pods-resource-usage-with-prometheus-and-grafana-c17848febadc
@@ -8,25 +8,8 @@ version: '3.7'
 services:
   prometheus:
     image: prom/prometheus
-    container_name: prometheus
+    ports:
+      - '9090:9090'
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus_data:/prometheus
-    ports:
-      - 9090:9090
-    networks:
-      - monitoring
-
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - 3000:3000
-    volumes:
-      - ./grafana_data:/var/lib/grafana
-    networks:
-      - monitoring
-      
-networks:
-  monitoring:
-    driver: bridge
+      - ./prometheus_data:/prometheus/data # adaptar para volume persistente na cloud
