@@ -74,7 +74,7 @@ spec:
             - name: MYSQL_TCP_PORT
               value: "3307"
             - name: SERVICE_HOST
-              value: "mysql-orders-deployment" #value: "service_orders"
+              value: "ms-orders-service" #value: "service_orders"
             - name: SERVICE_PORT
               value: "50050"
 
