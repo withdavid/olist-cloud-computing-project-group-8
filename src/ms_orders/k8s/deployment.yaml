@@ -27,11 +27,6 @@ spec:
               value: "root_password"
             - name: MYSQL_TCP_PORT
               value: "3309"
-            - name: SERVICE_HOST
-              value: "ms-customers-deployment" # value: "service_customers"
-            - name: SERVICE_PORT
-              value: "50051"
-              
           ports:
             - containerPort: 3309
           resources:
@@ -79,8 +74,13 @@ spec:
               value: "root_password"
             - name: MYSQL_TCP_PORT
               value: "3309"
+            - name: SERVICE_HOST
+              value: "ms-customers-deployment" # value: "service_customers"
+            - name: SERVICE_PORT
+              value: "50051"
           ports:
             - containerPort: 5000
+            - containerPort: 50050
           resources:
             requests:
               memory: "64Mi"

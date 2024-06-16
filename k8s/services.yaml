@@ -6,9 +6,14 @@ spec:
   selector:
     app: ms-orders
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 8080
       targetPort: 5000
+    - name: grpc
+      protocol: TCP
+      port: 50050
+      targetPort: 50050
   type: LoadBalancer
 
 ---
@@ -20,9 +25,14 @@ spec:
   selector:
     app: ms-customers
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 8080
       targetPort: 5000
+    - name: grpc
+      protocol: TCP
+      port: 50051
+      targetPort: 50051
   type: LoadBalancer
 
 ---
