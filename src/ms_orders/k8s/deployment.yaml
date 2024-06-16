@@ -60,7 +60,7 @@ spec:
     spec:
       containers:
         - name: ms-orders
-          image: us-west1-docker.pkg.dev/olist-cloud/olist-containers/ms_orders_api:latest
+          image: us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_orders_api:latest
           env:
             - name: MYSQL_HOST
               value: "mysql-orders"
