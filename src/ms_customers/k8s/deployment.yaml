@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: mysql-customers-deployment
 spec:
-  replicas: 1
+  replicas: 1 # adicionado em 21-05
   selector:
     matchLabels:
       app: mysql-customers
@@ -16,8 +16,6 @@ spec:
         - name: mysql-customers
           image: mysql:latest
           env:
-            - name: MYSQL_HOST
-              value: "mysql_customers"
             - name: MYSQL_DATABASE
               value: "olist_customers"
             - name: MYSQL_USER
@@ -76,8 +74,7 @@ spec:
             - name: MYSQL_TCP_PORT
               value: "3307"
           ports:
-            - containerPort: 5001
-            - containerPort: 50051
+            - containerPort: 5000
           resources:
             requests:
               memory: "64Mi"
@@ -85,15 +82,3 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "500m"
-          livenessProbe:
-            httpGet:
-              path: /metrics
-              port: 5001
-            initialDelaySeconds: 3
-            periodSeconds: 3
-          readinessProbe:
-            httpGet:
-              path: /metrics
-              port: 5001
-            initialDelaySeconds: 3
-            periodSeconds: 3
