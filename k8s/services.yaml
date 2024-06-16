@@ -21,7 +21,7 @@ spec:
   ports:
     - protocol: TCP
       port: 8080
-      targetPort: 5000
+      targetPort: 5001
   type: LoadBalancer
 ---
 apiVersion: v1
@@ -34,7 +34,7 @@ spec:
   ports:
     - protocol: TCP
       port: 8080
-      targetPort: 5000
+      targetPort: 5002
   type: LoadBalancer
 ---
 apiVersion: v1
