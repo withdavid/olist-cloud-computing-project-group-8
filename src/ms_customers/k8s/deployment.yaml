@@ -73,6 +73,11 @@ spec:
               value: "root_password"
             - name: MYSQL_TCP_PORT
               value: "3307"
+            - name: SERVICE_HOST
+              value: "mysql-orders-deployment" #value: "service_orders"
+            - name: SERVICE_PORT
+              value: "50050"
+
           ports:
             - containerPort: 5000
           resources:
