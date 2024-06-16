@@ -33,10 +33,10 @@ spec:
           resources:
             requests:
               memory: "64Mi"
-              cpu: "50m"
+              cpu: "250m"
             limits:
               memory: "128Mi"
-              cpu: "100m"
+              cpu: "500m"
           volumeMounts:
             - name: mysql-ms-customers-storage
               mountPath: /var/lib/mysql
