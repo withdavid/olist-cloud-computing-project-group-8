@@ -47,22 +47,12 @@ build-images: ## build docker containers
 .PHONY: build-images
 
 push-images: ## push docker images to custom docker registry
-	# cd src/ms_customers
-	# docker build -t us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_customers_api:latest .
-	# docker push us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_customers_api:latest
-
-	# cd ../ms_products
-	# docker build -t us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/olist-containers/ms_products_api:latest .
-	# docker push us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_products_api:latest
-
-	# cd ../ms_orders
-	# docker build -t us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_orders_api:latest .
-	# docker push us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_orders_api:latest
-
 	docker tag ms_customers-api:latest us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_customers_api:latest
 	docker push us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_customers_api:latest
+
 	docker tag ms_products-api:latest us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_products_api:latest
 	docker push us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_products_api:latest
+	
 	docker tag ms_orders-api:latest us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_orders_api:latest
 	docker push us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_orders_api:latest 
 .PHONY: push-images
