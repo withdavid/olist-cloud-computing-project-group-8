@@ -62,3 +62,6 @@ steps:
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
       - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
