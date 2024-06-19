@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime, timedelta
 from locust import HttpUser, SequentialTaskSet, task, between
 
-SERVER_IP = os.getenv("SERVER_IP", "http://34.144.235.5")
+SERVER_IP = os.getenv("SERVER_IP", "http://34.36.253.189")
 
 def random_string(length=6):
     letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
