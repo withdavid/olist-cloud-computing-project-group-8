@@ -1,66 +1,111 @@
 steps:
-  # Etapa 1: Construir a imagem do Docker para ms_customers usando docker-compose
-  - name: 'docker/compose:1.29.2'
-    args: ['-f', 'src/ms_customers/docker-compose.yml', 'build', '--no-cache', '--force-rm']
-
-  # Etapa 2: Tag da imagem ms_customers para o Artifact Registry
+  # Step 1: Build the Docker image for ms_customers from the Dockerfile
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['tag', 'ms_customers-api:latest', 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_customers_api:latest']
+    args:
+      - 'build'
+      - '-t'
+      - 'ms_customers-api:latest'
+      - '-f'
+      - 'src/ms_customers/Dockerfile'
+      - 'src/ms_customers'  # Atualize o caminho de contexto
 
-  # Etapa 3: Push da imagem ms_customers para o Artifact Registry
+  # Step 2: Tag the Docker image for ms_customers
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_customers_api:latest']
+    args:
+      - 'tag'
+      - 'ms_customers-api:latest'
+      - 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_customers_api:latest'
 
-  # Etapa 4: Construir a imagem do Docker para ms_products usando docker-compose
-  - name: 'docker/compose:1.29.2'
-    args: ['-f', 'src/ms_products/docker-compose.yml', 'build', '--no-cache', '--force-rm']
-
-  # Etapa 5: Tag da imagem ms_products para o Artifact Registry
+  # Step 3: Push the Docker image for ms_customers to the Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['tag', 'ms_products-api:latest', 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_products_api:latest']
+    args:
+      - 'push'
+      - 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_customers_api:latest'
 
-  # Etapa 6: Push da imagem ms_products para o Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_products_api:latest']
-
-  # Etapa 7: Construir a imagem do Docker para ms_orders usando docker-compose
-  - name: 'docker/compose:1.29.2'
-    args: ['-f', 'src/ms_orders/docker-compose.yml', 'build', '--no-cache', '--force-rm']
-
-  # Etapa 8: Tag da imagem ms_orders para o Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['tag', 'ms_orders-api:latest', 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_orders_api:latest']
-
-  # Etapa 9: Push da imagem ms_orders para o Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_orders_api:latest']
-
-  # Etapa 10: Aplicar os manifests gerais no Kubernetes
+  # Step 4: Apply the Kubernetes configuration for ms_customers
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['apply', '-f', 'k8s/']
+    args:
+      - 'apply'
+      - '-f'
+      - 'src/ms_customers/k8s/'
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
       - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
 
-  # Etapa 11: Aplicar os manifests específicos do ms_customers no Kubernetes
+  # Step 5: Build the Docker image for ms_products from the Dockerfile
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'ms_products-api:latest'
+      - '-f'
+      - 'src/ms_products/Dockerfile'
+      - 'src/ms_products'  # Atualize o caminho de contexto
+
+  # Step 6: Tag the Docker image for ms_products
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'tag'
+      - 'ms_products-api:latest'
+      - 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_products_api:latest'
+
+  # Step 7: Push the Docker image for ms_products to the Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_products_api:latest'
+
+  # Step 8: Apply the Kubernetes configuration for ms_products
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['apply', '-f', 'src/ms_customers/k8s/']
+    args:
+      - 'apply'
+      - '-f'
+      - 'src/ms_products/k8s/'
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
       - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
 
-  # Etapa 12: Aplicar os manifests específicos do ms_products no Kubernetes
+  # Step 9: Build the Docker image for ms_orders from the Dockerfile
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'ms_orders-api:latest'
+      - '-f'
+      - 'src/ms_orders/Dockerfile'
+      - 'src/ms_orders'  # Atualize o caminho de contexto
+
+  # Step 10: Tag the Docker image for ms_orders
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'tag'
+      - 'ms_orders-api:latest'
+      - 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_orders_api:latest'
+
+  # Step 11: Push the Docker image for ms_orders to the Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-west1-docker.pkg.dev/computacaonuvem-415719/olist-cloud/ms_orders_api:latest'
+
+  # Step 12: Apply the Kubernetes configuration for ms_orders
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['apply', '-f', 'src/ms_products/k8s/']
+    args:
+      - 'apply'
+      - '-f'
+      - 'src/ms_orders/k8s/'
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
       - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
 
-  # Etapa 13: Aplicar os manifests específicos do ms_orders no Kubernetes
+  # Etapa 13: Aplicar os manifests gerais no Kubernetes
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['apply', '-f', 'src/ms_orders/k8s/']
+    args:
+      - 'apply'
+      - '-f'
+      - 'k8s/'
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
       - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
 
 options:
