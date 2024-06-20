@@ -8,5 +8,5 @@ spec:
     kind: Deployment
     name: ms-orders-deployment
   minReplicas: 2
-  maxReplicas: 5
+  maxReplicas: 3
   targetCPUUtilizationPercentage: 60
