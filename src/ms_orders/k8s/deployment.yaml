@@ -31,10 +31,10 @@ spec:
             - containerPort: 3309
           resources:
             requests:
-              memory: "1Gi"
+              memory: "1024Mi"
               cpu: "500m"
             limits:
-              memory: "1Gi"
+              memory: "1024Mi"
               cpu: "500m"
           volumeMounts:
             - name: mysql-ms-orders-storage
@@ -83,8 +83,8 @@ spec:
             - containerPort: 50050
           resources:
             requests:
-              memory: "1Gi"
-              cpu: "1"
+              memory: "1024Mi"
+              cpu: "1000m"
             limits:
-              memory: "1Gi"
-              cpu: "1"
+              memory: "1024Mi"
+              cpu: "1000m"
