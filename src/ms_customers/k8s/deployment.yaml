@@ -48,7 +48,7 @@ kind: Deployment
 metadata:
   name: ms-customers-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: ms-customers
@@ -83,8 +83,8 @@ spec:
             - containerPort: 50051
           resources:
             requests:
-              memory: "1024Mi"
+              memory: "2048Mi"
               cpu: "2000m"
             limits:
-              memory: "1024Mi"
+              memory: "2048Mi"
               cpu: "2000m"
