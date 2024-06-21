@@ -8,5 +8,5 @@ spec:
     kind: Deployment
     name: ms-products-deployment
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 2
   targetCPUUtilizationPercentage: 60
