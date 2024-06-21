@@ -48,7 +48,7 @@ kind: Deployment
 metadata:
   name: ms-customers-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: ms-customers
